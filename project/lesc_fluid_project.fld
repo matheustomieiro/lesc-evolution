@@ -1,0 +1,38 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0304
+header_name {.h}
+code_name {.cxx}
+Function {gui()} {
+  comment {Funcao que instancia a GUI} open
+} {
+  Fl_Window janela_principal {
+    label LE_EVOLUTION
+    comment {Janela principal da GUI} open
+    xywh {364 154 870 405} type Double color 237 labelfont 11 visible
+  } {
+    Fl_Box image {
+      comment {Imagem do cenario} selected
+      xywh {445 45 400 300} box SHADOW_BOX color 215
+    }
+    Fl_Button start {
+      label INICIAR
+      comment {Comeca o ciclo de evolucao}
+      xywh {195 350 105 30} box RSHADOW_BOX color 215 labelfont 11
+    }
+    Fl_Value_Input fmg {
+      label {FMG:}
+      comment {Fator de mistura genetica}
+      xywh {180 35 180 25} box SHADOW_BOX color 215 labelfont 11 textfont 11
+    }
+    Fl_Value_Input populacao {
+      label {INDIVIDUOS:}
+      comment {Numero de individuos da populacao}
+      xywh {180 75 180 25} box SHADOW_BOX color 215 labelfont 11 textfont 11
+    }
+    Fl_Value_Input mutacao_inicial {
+      label {MUTACAO INICIAL:}
+      comment {Taxa de mutacao inicial}
+      xywh {180 120 180 25} box SHADOW_BOX color 215 labelfont 11 textfont 11
+    }
+  }
+}
