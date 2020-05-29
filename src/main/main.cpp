@@ -1,7 +1,8 @@
 //Main file
-#include "../gui/gui.h"
+#include "../../headers/gui.h"
+#include "../../const/macros.h"
 
 int main(int argc, char *argv[]){
-    gui();
+    Fl_Double_Window *janela =  gui();
     return 0;
 }
