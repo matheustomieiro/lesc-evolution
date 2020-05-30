@@ -21,7 +21,7 @@ int main(int argc, char *argv[]){
 
   //##### Abrindo threads #####//
   pthread_t gui, evolution;
-  pthread_create(&evolution, NULL, evolve_routine ,NULL);
+  //thread_create(&evolution, NULL, evolve_routine ,NULL);
   pthread_create(&gui, NULL, inst_gui, NULL);
   pthread_join(gui,NULL);
   //###########################//
