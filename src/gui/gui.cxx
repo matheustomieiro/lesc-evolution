@@ -6,7 +6,7 @@ Fl_Double_Window *janela_principal=(Fl_Double_Window *)0;
 
 Fl_BMP_Image *image=(Fl_BMP_Image *)0;
 
-Fl_Button *start=(Fl_Button *)0;
+Fl_Return_Button *start=(Fl_Return_Button *)0;
 
 Fl_Value_Input *fmg=(Fl_Value_Input *)0;
 
@@ -14,10 +14,18 @@ Fl_Value_Input *populacao=(Fl_Value_Input *)0;
 
 Fl_Value_Input *mutacao_inicial=(Fl_Value_Input *)0;
 
+
+static void start_listener(Fl_Return_Button*, void*){
+  fmg->deactivate();
+  populacao->deactivate();
+  mutacao_inicial->deactivate();
+  start->deactivate();
+}
+
 /**
  Funcao que instancia a GUI
 */
-Fl_Double_Window* gui() {
+Fl_Double_Window* make_window() {
   { // Janela principal da GUI
     janela_principal = new Fl_Double_Window(870, 405, "LE_EVOLUTION");
     janela_principal->color((Fl_Color)237);
@@ -27,10 +35,11 @@ Fl_Double_Window* gui() {
       image->draw(445,45,400,300,0,0);
     } // Fl_Box* image
     { // Comeca o ciclo de evolucao
-      start = new Fl_Button(195, 350, 105, 30, "INICIAR");
+      start = new Fl_Return_Button(185, 350, 115, 30, "INICIAR");
       start->box(FL_RSHADOW_BOX);
       start->color((Fl_Color)215);
       start->labelfont(11);
+      start->callback((Fl_Callback*)start_listener);
     } // Fl_Button* start
     { // Fator de mistura genetica
       fmg = new Fl_Value_Input(180, 35, 180, 25, "FMG:");
@@ -54,6 +63,12 @@ Fl_Double_Window* gui() {
       mutacao_inicial->textfont(11);
     } // Fl_Value_Input* mutacao_inicial
     janela_principal->end();
+    janela_principal->show();
   } // Fl_Double_Window* janela_principal
   return janela_principal;
+}
+
+int gui_instantiate(void){
+  make_window();
+  return Fl::run();
 }
