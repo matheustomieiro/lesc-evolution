@@ -1,5 +1,10 @@
+#include <vector>
 #define width 20
 #define height 20
+
+#define gmf 2.45
+#define population 20
+#define initial_mutation 0.02
 
 extern const unsigned char map[width][height] = {
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -23,3 +28,17 @@ extern const unsigned char map[width][height] = {
   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
+
+typedef struct mov{
+  char direcao;
+  unsigned char passos;
+}movimento;
+
+typedef struct ent{
+  bool dead;
+  unsigned char x;
+  unsigned char y;
+  std::vector<movimento> movimentos;
+}entity;
+
+extern entity entities[population];
