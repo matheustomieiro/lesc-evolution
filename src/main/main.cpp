@@ -1,14 +1,21 @@
 //Main files
 #include "../../const/macros.h"
+#include "../../headers/gui.h"
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+
 int QUIT = false;
+
+char readDirection(){
+  // a fazer dps de base.cpp implementado
+  return 'nothing';
+}
 
 //Thread function to instantiate the GUI
 void *inst_gui(void*){
-  //GUI
+  runGui();
   QUIT = true;
   pthread_exit(NULL);
 }
