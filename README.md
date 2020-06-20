@@ -5,4 +5,6 @@ Felipe Oliveira
 
 Matheus Tomieiro
 
+Victor Vieira Custodio Reis
+
 Yago Poletto
