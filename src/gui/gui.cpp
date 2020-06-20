@@ -31,6 +31,7 @@ ao ceder um codigo tao bem comentado e de facil entendimento*/
 
 #include "quickcg.h"
 #include "../../const/macros.h"
+#include "../../headers/gui.h"
 using namespace QuickCG;
 
 void runGui(char (*readDirection)(void)){
