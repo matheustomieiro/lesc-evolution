@@ -12,5 +12,7 @@ gui:
 clean:
 	rm bin/*
 
+
+
 run:
 	./release/Main.o

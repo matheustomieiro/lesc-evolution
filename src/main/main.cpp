@@ -1,13 +1,14 @@
-//Main file
-#include "../../headers/gui.h"
+//Main files
 #include "../../const/macros.h"
-#include "pthread.h"
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 int QUIT = false;
 
 //Thread function to instantiate the GUI
 void *inst_gui(void*){
-  gui_instantiate(); //Roda ate a tela ser fechada
+  //GUI
   QUIT = true;
   pthread_exit(NULL);
 }

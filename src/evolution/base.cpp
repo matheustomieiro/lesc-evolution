@@ -5,13 +5,9 @@
 
 movimento aux;
 
-movimento new_movement(char mov_type, unsigned char ){
-  aux.direcao = 'f';
-  aux.passos = 5;
+movimento new_movement(char mov_type, unsigned char qtd){
+  aux.direcao = mov_type;
+  aux.passos = qtd;
   return aux;
 }
 
-void printAlgo(){
-  printf("HELLO?\n");
-  //e[blabla]->movimentos.push_back(new_movement('f',10));
-}
