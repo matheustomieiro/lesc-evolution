@@ -17,44 +17,19 @@ movimento new_movement(char mov_type, unsigned char qtd){
 //Funcao que calcula uma funcao pre-definida
 //args: (double) x
 double PreFunction(double x){
-
-  return (2*cos(0.39*x)) + (5*sin(0.5*x)) + (0.5*cos(0.1*x)) + (10*sin(0.7*x)) + (5*sin(1*x)) + (5*sin(0.35*x));  
-
+  return (2*cos(0.39*x)) + (5*sin(0.5*x)) + (0.5*cos(0.1*x)) + (10*sin(0.7*x)) + (5*sin(1*x)) + (5*sin(0.35*x));
 }
 
 // Funcao que avalia uma populacao e define o melhor e o pior
 void Avaliar(){
-
   for(int x = 1; x <= TAMPOPULACAO; x++){
-
     if(f[x] > f[MELHOR]) MELHOR = x;
     if(f[x] < f[PIOR]) PIOR = x;
   }
-
   if(THEBESTOFTHEBEST[1] < f[MELHOR]){
     THEBESTOFTHEBEST[0] = POPULATION[MELHOR];
     THEBESTOFTHEBEST[1] = f[MELHOR];
-  }       
-
-}
-
-
-void initialEvo(){
-
-  srand(time(NULL));
-
-  for(int i = 1; i <= TAMPOPULATION; i++){
-  
-    POPULATION[i] = -10;
-
   }
-
-  for(int i = 1; i <= TAMPOPULATION; i++){
-
-    f[i] = -10;
-
-  }
-
 }
 
 
