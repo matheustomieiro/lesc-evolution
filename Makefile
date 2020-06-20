@@ -1,5 +1,5 @@
 all:	evolution	gui
-	g++	-o	release/Main.o	bin/base.o	bin/gui.o	src/main/main.cpp	-lfltk	-lfltk_images	-lpthread	-Ofast
+	g++	-o	release/Main.o	bin/base.o	bin/gui.o	src/main/main.cpp	-lpthread	-lSDL	-Ofast
 
 evolution:
 	g++	-c	src/evolution/base.cpp
@@ -11,6 +11,9 @@ gui:
 
 clean:
 	rm bin/*
+
+install_lib:
+	sudo apt install libsdl1.2-dev 
 
 run:
 	./release/Main.o

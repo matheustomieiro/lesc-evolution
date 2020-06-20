@@ -5,4 +5,10 @@ Felipe Oliveira
 
 Matheus Tomieiro
 
+Victor Vieira Custodio Reis
+
 Yago Poletto
+
+
+
+Creditos pelas funcoes da CG: https://lodev.org/cgtutor/quickcg.html
