@@ -16,7 +16,7 @@ movimento new_movement(char mov_type, unsigned char qtd){
 
 //Funcao que calcula uma funcao pre-definida
 //args: (double) x
-double PreFunction(double x){
+double preFunction(double x){
 
   return (2*cos(0.39*x)) + (5*sin(0.5*x)) + (0.5*cos(0.1*x)) + (10*sin(0.7*x)) + (5*sin(1*x)) + (5*sin(0.35*x));  
 
@@ -67,7 +67,7 @@ void iniciaPop(){
   }
 
   for(int x = 1; x <= TAMPOPULATION; x++){
-    f[x] = PreFunction(POPULATION[x]);
+    f[x] = preFunction(POPULATION[x]);
   }
 
 }
@@ -98,9 +98,54 @@ void Transa(){
       }
     }
 
-    f[i] = PreFunction(POPULATION[i]);
+    f[i] = preFunction(POPULATION[i]);
 
   }
 
 }
+
+void extinction(){
+
+  iniciaPop();
+  MUTACAO = CONST_MUTACAO;
+  GERACAO = 1;
+
+}
+
+void predacao(){
+
+  POPULATION[PIOR] = rand()%TAM_AMBIENTE;
+  f[PIOR] = preFunction(POPULATION[PIOR]);
+  
+}
+
+void evolve(){
+
+  double dx = 1, dy = 0;
+  Avaliar();
+  PONTO[0] = {POPULATION[MELHOR], preFunction(MELHOR)};
+  Transa();
+
+  if(MUTACAO_VARIAVEL){
+    dy = (PONTO[1][1]) - PONTO[0][1];
+    dx = PONTO[1][0] - PONTO[0][0];
+
+    if(abs(dy/dx) <= 0.02 && abs(dy/dx) != 0){
+      MUTACAO = MUTACAO * 2;
+    }
+    else{
+      MUTACAO = CONST_MUTACAO;
+    }
+
+    if(MUTACAO > 100) extinction();
+
+  }
+
+  PONTO[1] = PONTO[0];
+
+  if((GERACAO%10) == 0) predacao();
+
+  return;
+}
+
 

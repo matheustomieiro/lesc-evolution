@@ -41,7 +41,7 @@ typedef struct mov{
 
 typedef struct ent{
   bool dead;
-  unsigned char x;
+  unsigned char x;  
   unsigned char y;
   std::vector<movimento> movimentos;
 }entity;
