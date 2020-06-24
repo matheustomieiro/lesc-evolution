@@ -29,7 +29,7 @@ ao ceder um codigo tao bem comentado e de facil entendimento*/
 #include <vector>
 #include <iostream>
 
-#include "quickcg.h"
+#include "./quickcg.h"
 #include "../../const/macros.h"
 #include "../../headers/gui.h"
 using namespace QuickCG;

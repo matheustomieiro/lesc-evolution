@@ -9,13 +9,13 @@
 int QUIT = false;
 
 char readDirection(){
-  // a fazer dps de base.cpp implementado
-  return 'nothing';
+  printf("OK\n");
+  return 'f';
 }
 
 //Thread function to instantiate the GUI
 void *inst_gui(void*){
-  runGui();
+  runGui(readDirection);
   QUIT = true;
   pthread_exit(NULL);
 }

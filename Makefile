@@ -6,7 +6,7 @@ evolution:
 	mv	base.o	bin/base.o
 
 gui:
-	g++	-c	src/gui/gui.cxx
+	g++	-c	src/gui/gui.cpp
 	mv	gui.o	bin/gui.o
 
 clean:
