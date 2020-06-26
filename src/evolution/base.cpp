@@ -14,6 +14,7 @@ movimento new_movement(char mov_type, unsigned char qtd){
   return aux;
 }
 
+/*
 //Funcao que calcula uma funcao pre-definida
 //args: (double) x
 double PreFunction(double x){
@@ -76,5 +77,5 @@ void Transa(){
     f[i] = PreFunction(POPULATION[i]);
 
   }
-
 }
+*/

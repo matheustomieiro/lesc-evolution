@@ -1,1 +1,0 @@
-void runGui(char (*readDirection)(void));

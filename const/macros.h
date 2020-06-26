@@ -4,13 +4,17 @@
 #define screenWidth 640
 #define screenHeight 480
 
-#define speed 5
-#define rotation 3
+#define speed 4
+#define rotation 0.5
+#define radius_entity 0.01
+#define initial_x 0
+#define initial_y 0
+#define initial_mutation 0.02
 
 #define gmf 2.45
 #define population 20
-#define initial_mutation 0.02
 
+/*
 extern const unsigned char map[mapWidth][mapHeight] = {
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -33,6 +37,7 @@ extern const unsigned char map[mapWidth][mapHeight] = {
   {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
+*/
 
 typedef struct mov{
   char direcao;
@@ -41,9 +46,12 @@ typedef struct mov{
 
 typedef struct ent{
   bool dead;
-  unsigned char x;
-  unsigned char y;
-  std::vector<movimento> movimentos;
+  float radius;
+  float x;
+  float y;
+  float theta;
+  float r,g,b;
+  //std::vector<movimento> movimentos;
 }entity;
 
 extern entity entities[population];
