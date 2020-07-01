@@ -16,7 +16,7 @@ Fl_Return_Button *start=(Fl_Return_Button *)0;
 Fl_Value_Input *fmg=(Fl_Value_Input *)0;
 Fl_Value_Input *populacao=(Fl_Value_Input *)0;
 Fl_Value_Input *mutacao_inicial=(Fl_Value_Input *)0;
-Fl_JPEG_Image *jpg = (Fl_JPEG_Image *)0;
+Fl_PNG_Image *png = (Fl_PNG_Image *)0;
 Fl_Box *background = (Fl_Box*)0;
 
 static void start_listener(Fl_Return_Button*, void*){
@@ -37,8 +37,8 @@ Fl_Double_Window* make_window() {
     { // Imagem do cenario
       fl_register_images();
       background = new Fl_Box(10,10,screenWidth,screenHeight);
-      jpg = new Fl_JPEG_Image("/var/tmp/foo.jpg");
-      background->image(jpg);
+      png = new Fl_PNG_Image("/var/tmp/foo.jpg");
+      background->image(png);
     } // Fl_Box* image
     { // Comeca o ciclo de evolucao
       start = new Fl_Return_Button(185, 350, 115, 30, "INICIAR");

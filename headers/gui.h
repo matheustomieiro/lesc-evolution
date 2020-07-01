@@ -11,8 +11,8 @@ extern Fl_Value_Input *fmg;
 extern Fl_Value_Input *populacao;
 extern Fl_Value_Input *mutacao_inicial;
 #include <FL/Fl_Shared_Image.H>
-#include <FL/Fl_JPEG_Image.H>
-extern Fl_JPEG_Image *jpg;
+#include <FL/Fl_PNG_Image.H>
+extern Fl_PNG_Image *png;
 #include <FL/Fl_Box.H>
 extern Fl_Box *background;
 #endif
