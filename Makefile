@@ -1,10 +1,10 @@
 OS := $(shell uname -s)
 
 ifeq ($(OS),Linux)
-	FLAGS := -lpthread	-lglut	-lGLU	-lGL	-w
+	FLAGS := -lpthread	-lfltk	-w
 endif
 ifeq ($(OS),Darwin)
-		FLAGS := -lpthread	-framework	OpenGL	-framework	GLUT	-w
+		FLAGS := -lpthread	-lfltk	-w
 endif
 
 ifeq ($(OS),Linux)

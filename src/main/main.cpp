@@ -1,74 +1,77 @@
 //Main files
-#ifdef __APPLE__
-  #include <GLUT/glut.h>
-#else
-  #include <GL/glut.h>
-#endif
 #include "../../const/macros.h"
 #include <iostream>
 #include <math.h>
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "../../headers/gui.h"
 
 using namespace std;
 
 int QUIT = false;
-entity pop[population];
 
+Fl_Double_Window *janela_principal=(Fl_Double_Window *)0;
+Fl_Return_Button *start=(Fl_Return_Button *)0;
+Fl_Value_Input *fmg=(Fl_Value_Input *)0;
+Fl_Value_Input *populacao=(Fl_Value_Input *)0;
+Fl_Value_Input *mutacao_inicial=(Fl_Value_Input *)0;
+Fl_JPEG_Image *jpg = (Fl_JPEG_Image *)0;
+Fl_Box *background = (Fl_Box*)0;
 
-void setAtr(entity *e, bool dead, float radius, float x, float y, float theta, float r, float g, float b){
-  e->dead = dead; e->radius = radius; e->x = x; e->y = y; e->theta = theta; e->r = r; e->g = g; e->b = b;
+static void start_listener(Fl_Return_Button*, void*){
+  fmg->deactivate();
+  populacao->deactivate();
+  mutacao_inicial->deactivate();
+  start->deactivate();
 }
 
-void rotate_entity(entity *e, float angle){
-    e->theta+=angle;
-}
-
-void move_entity(entity *e, float d){
-  e->x = e->x + d*speed*cos(e->theta);
-  e->y = e->y + d*speed*sin(e->theta);
-  if(e->x > 1) e->x = -0.9; if(e->x < -1) e->x = 0.9;//X stays between 1 and -1
-  if(e->y > 1) e->y = -0.9; if(e->y < -1) e->y = 0.9; //Y stays between 1 and -1
-}
-
-void draw_entity(entity e){
-  float x = e.x;
-  float y = e.y;
-  float theta = e.theta;
-  float radius = e.radius;
-
-  glBegin(GL_POLYGON);
-  glColor3f(e.r, e.g, e.b);
-  for (int i = 0; i < 360; i+=45) {
-    glVertex2d(((radius*2)*cos(i/180.0*M_PI)+x), radius*sin(i/180.0*M_PI)+y);
-  }
-  glEnd();
-  glBegin(GL_LINES);
-  glColor3f(e.r, e.g, e.b);
-  glVertex2d(x-(radius*6),y+(radius*3));
-  glVertex2d(x-(radius*1.5),y);
-  glVertex2d(x-(radius*6),y+(radius*-3));
-  glVertex2d(x-(radius*1.5),y);
-  glEnd();
-}
-
-void draw(){
-  glClear(GL_COLOR_BUFFER_BIT);
-  for(int i=0; i<population; i++){
-    draw_entity(pop[i]);
-  }
-  glutSwapBuffers();
-}
-
-
-void timer(int){
-  for(int i=0; i<population; i++){
-    move_entity(&pop[i], 0.01 + i/10);
-    rotate_entity(&pop[i], 0.15 + i/10);
-  }
-  glutPostRedisplay();
-  glutTimerFunc(1000/60, timer, 0);
+/**
+ Funcao que instancia a GUI
+*/
+Fl_Double_Window* make_window() {
+  { // Janela principal da GUI
+    janela_principal = new Fl_Double_Window(870, 405, "LE_EVOLUTION");
+    janela_principal->color((Fl_Color)237);
+    janela_principal->labelfont(11);
+    { // Imagem do cenario
+      fl_register_images();
+      background = new Fl_Box(10,10,screenWidth,screenHeight);
+      jpg = new Fl_JPEG_Image("/var/tmp/foo.jpg");
+      background->image(jpg);
+    } // Fl_Box* image
+    { // Comeca o ciclo de evolucao
+      start = new Fl_Return_Button(185, 350, 115, 30, "INICIAR");
+      start->box(FL_RSHADOW_BOX);
+      start->color((Fl_Color)215);
+      start->labelfont(11);
+      start->callback((Fl_Callback*)start_listener);
+    } // Fl_Button* start
+    { // Fator de mistura genetica
+      fmg = new Fl_Value_Input(180, 35, 180, 25, "FMG:");
+      fmg->box(FL_SHADOW_BOX);
+      fmg->color((Fl_Color)215);
+      fmg->labelfont(11);
+      fmg->textfont(11);
+    } // Fl_Value_Input* fmg
+    { // Numero de individuos da populacao
+      populacao = new Fl_Value_Input(180, 75, 180, 25, "INDIVIDUOS:");
+      populacao->box(FL_SHADOW_BOX);
+      populacao->color((Fl_Color)215);
+      populacao->labelfont(11);
+      populacao->textfont(11);
+    } // Fl_Value_Input* populacao
+    { // Taxa de mutacao inicial
+      mutacao_inicial = new Fl_Value_Input(180, 120, 180, 25, "MUTACAO INICIAL:");
+      mutacao_inicial->box(FL_SHADOW_BOX);
+      mutacao_inicial->color((Fl_Color)215);
+      mutacao_inicial->labelfont(11);
+      mutacao_inicial->textfont(11);
+    } // Fl_Value_Input* mutacao_inicial
+    janela_principal->end();
+    janela_principal->show();
+  } // Fl_Double_Window* janela_principal
+  return janela_principal;
 }
 
 //Thread function to evolve A.G
@@ -82,18 +85,8 @@ void *evolve_routine(void*){
 
 int main(int argc, char **argv){
 
-  for(int i=0; i<population; i++){
-    setAtr(&pop[i], false, radius_entity, initial_x, initial_y, i/156+0.56, 0.5f, 0.35f, 0.05f);
-  }
-  glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_RGB);
-  glutInitWindowSize(screenWidth, screenHeight);
-  glutInitWindowPosition(0, 0);
-  glutCreateWindow("Labyrinth Escape Evolution");
-  glClearColor(1.0, 1.0, 1.0, 1.0);
-  glutDisplayFunc(draw);
-  glutTimerFunc(0, timer, 0); //Defining the loop function
-  glutMainLoop();
+  fl_register_images(); 
+
 
   //##### Opening threads #####//
   pthread_t evolution;
@@ -101,5 +94,5 @@ int main(int argc, char **argv){
   pthread_join(evolution, NULL);
   //###########################//
 
-  return EXIT_SUCCESS;
+  return Fl::run();
 }
