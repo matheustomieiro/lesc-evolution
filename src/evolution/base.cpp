@@ -30,15 +30,12 @@ void iniciaPop(entity* entities){
       case 0:
         dir = 'f';
         break;
-      
       case 1:
         dir = 'b';
         break;
-
       case 2:
         dir = 'l';
         break;
-
       case 3:
         dir = 'r';
         break;
