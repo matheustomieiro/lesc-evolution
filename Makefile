@@ -1,17 +1,12 @@
 OS := $(shell uname -s)
 
-ifeq ($(OS),Linux)
-	FLAGS := -lpthread	-lfltk	-lfltk-images	-w
-endif
-ifeq ($(OS),Darwin)
-		FLAGS := -lpthread	-lfltk	-lfltk-images	-w
-endif
+FLAGS := -lpthread	-lfltk	-lfltk_images	-w
 
 ifeq ($(OS),Linux)
-	LIBS := sudo apt install mesa-common-dev
+	LIBS := sudo apt install mesa-common-dev	libfltk1.3-dev	libfltk-images1.3
 endif
 ifeq ($(OS),Darwin)
-		LIBS := brew install freeglut3
+		LIBS := brew install fltk
 endif
 
 all:	evolution
@@ -22,7 +17,7 @@ evolution:
 	mv	base.o	bin/base.o
 
 clean:
-	rm bin/*
+	rm bin/* release/*
 
 install_libs:
 	$(LIBS)
