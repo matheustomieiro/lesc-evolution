@@ -1,5 +1,4 @@
 #include "../../headers/base.h"
-#include "../../const/macros.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include <math.h>
@@ -14,7 +13,7 @@ movimento new_movement(char mov_type, unsigned char qtd){
 }
 
 
-void iniciaPop(entity* entities){
+void iniciaPop(entity* entities, int population){
 
   int num_direcao, num_passos;
   char dir;
@@ -47,7 +46,7 @@ void iniciaPop(entity* entities){
   
 }
 
-void Transa(entity* entities, entity thebest){
+void Transa(entity* entities, entity thebest, int population, int initial_mutation){
 
   movimento moves[2];
   char chosen_mov, rand_dir[2];
