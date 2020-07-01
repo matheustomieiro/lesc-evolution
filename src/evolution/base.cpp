@@ -58,7 +58,7 @@ void Transa(entity* entities, entity thebest){
 
     srand(time(NULL));
 
-    ind_rand = (int) ((rand()%population + (rand()%430/1000.0 +  thebest.x*(rand()%388)/1000.0 + thebest.y*(rand()%588)/1000))*(initial_mutation))%population;
+    ind_rand = (int) ((rand()%population + (rand()%430/1000.0 +  thebest.x*(rand()%388)/1000.0 + thebest.x*(rand()%588)/1000))*(initial_mutation))%population;
 
     moves[0] = entities[ind_rand].movimentos[entities[ind_rand].movimentos.size() - 1];
 
