@@ -1,5 +1,6 @@
 //Main files
 #include "../../const/macros.h"
+#include "../../const/matrix.h"
 #include <iostream>
 #include <math.h>
 #include <pthread.h>
