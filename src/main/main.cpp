@@ -65,16 +65,16 @@ void draw(){
 
 
 void timer(int){
-  move_entity(&e1, 0.005);
-  rotate_entity(&e1, 0.001);
-  move_entity(&e2, 0.005);
-  rotate_entity(&e2, 0.001);
-  move_entity(&e3, 0.005);
-  rotate_entity(&e3, 0.001);
-  move_entity(&e4, 0.005);
-  rotate_entity(&e4, 0.001);
-  move_entity(&e5, 0.005);
-  rotate_entity(&e5, 0.001);
+  move_entity(&e1, 0.01);
+  rotate_entity(&e1, 0.15);
+  move_entity(&e2, 0.01);
+  rotate_entity(&e2,0.15);
+  move_entity(&e3, 0.01);
+  rotate_entity(&e3, 0.15);
+  move_entity(&e4, 0.01);
+  rotate_entity(&e4, 0.15);
+  move_entity(&e5, 0.01);
+  rotate_entity(&e5, 0.15);
   //Redesenhando
   glutPostRedisplay();
   glutTimerFunc(1000/60, timer, 0);
