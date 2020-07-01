@@ -14,12 +14,12 @@
 using namespace std;
 
 int QUIT = false;
-entity e1 = {false, radius_entity, initial_x, initial_y, 1.56, 0.5f, 0.35f, 0.05f};
-entity e2 = {false, radius_entity, initial_x, initial_y, 3.67, 0.5f, 0.35f, 0.05f};
-entity e3 = {false, radius_entity, initial_x, initial_y, 4.6, 0.5f, 0.35f, 0.05f};
-entity e4 = {false, radius_entity, initial_x, initial_y, 3.8, 0.5f, 0.35f, 0.05f};
-entity e5 = {false, radius_entity, initial_x, initial_y, 2.99, 0.5f, 0.35f, 0.05f};
+entity pop[population];
 
+
+void setAtr(entity *e, bool dead, float radius, float x, float y, float theta, float r, float g, float b){
+  e->dead = dead; e->radius = radius; e->x = x; e->y = y; e->theta = theta; e->r = r; e->g = g; e->b = b;
+}
 
 void rotate_entity(entity *e, float angle){
     e->theta+=angle;
@@ -55,27 +55,18 @@ void draw_entity(entity e){
 
 void draw(){
   glClear(GL_COLOR_BUFFER_BIT);
-  draw_entity(e1);
-  draw_entity(e2);
-  draw_entity(e3);
-  draw_entity(e4);
-  draw_entity(e5);
+  for(int i=0; i<population; i++){
+    draw_entity(pop[i]);
+  }
   glutSwapBuffers();
 }
 
 
 void timer(int){
-  move_entity(&e1, 0.01);
-  rotate_entity(&e1, 0.15);
-  move_entity(&e2, 0.01);
-  rotate_entity(&e2,0.15);
-  move_entity(&e3, 0.01);
-  rotate_entity(&e3, 0.15);
-  move_entity(&e4, 0.01);
-  rotate_entity(&e4, 0.15);
-  move_entity(&e5, 0.01);
-  rotate_entity(&e5, 0.15);
-  //Redrawing
+  for(int i=0; i<population; i++){
+    move_entity(&pop[i], 0.01 + i/10);
+    rotate_entity(&pop[i], 0.15 + i/10);
+  }
   glutPostRedisplay();
   glutTimerFunc(1000/60, timer, 0);
 }
@@ -91,7 +82,9 @@ void *evolve_routine(void*){
 
 int main(int argc, char **argv){
 
-  //Opening Gui
+  for(int i=0; i<population; i++){
+    setAtr(&pop[i], false, radius_entity, initial_x, initial_y, i/156+0.56, 0.5f, 0.35f, 0.05f);
+  }
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGB);
   glutInitWindowSize(screenWidth, screenHeight);

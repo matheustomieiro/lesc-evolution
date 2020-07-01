@@ -14,6 +14,7 @@
 #define gmf 2.45
 #define population 20
 
+
 /*
 extern const unsigned char map[mapWidth][mapHeight] = {
   {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
@@ -53,5 +54,3 @@ typedef struct ent{
   float r,g,b;
   //std::vector<movimento> movimentos;
 }entity;
-
-extern entity entities[population];
