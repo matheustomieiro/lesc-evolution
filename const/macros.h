@@ -51,7 +51,7 @@ typedef struct ent{
   float y;
   float theta;
   float r,g,b;
-  //std::vector<movimento> movimentos;
+  std::vector<movimento> movimentos;
 }entity;
 
 extern entity entities[population];
