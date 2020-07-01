@@ -31,17 +31,17 @@ static void start_listener(Fl_Return_Button*, void*){
 */
 Fl_Double_Window* make_window() {
   { // Janela principal da GUI
-    janela_principal = new Fl_Double_Window(870, 405, "LE_EVOLUTION");
+    janela_principal = new Fl_Double_Window(800, 500, "LE_EVOLUTION");
     janela_principal->color((Fl_Color)237);
     janela_principal->labelfont(11);
     { // Imagem do cenario
-      fl_register_images();
-      background = new Fl_Box(10,10,screenWidth,screenHeight);
-      png = new Fl_PNG_Image("/var/tmp/foo.jpg");
+      background = new Fl_Box(375,20,400,400);
+      background->box(FL_SHADOW_BOX);
+      png = new Fl_PNG_Image("img/map.png");
       background->image(png);
     } // Fl_Box* image
     { // Comeca o ciclo de evolucao
-      start = new Fl_Return_Button(185, 350, 115, 30, "INICIAR");
+      start = new Fl_Return_Button(150, 180, 115, 30, "INICIAR");
       start->box(FL_RSHADOW_BOX);
       start->color((Fl_Color)215);
       start->labelfont(11);
@@ -68,8 +68,8 @@ Fl_Double_Window* make_window() {
       mutacao_inicial->labelfont(11);
       mutacao_inicial->textfont(11);
     } // Fl_Value_Input* mutacao_inicial
-    janela_principal->end();
     janela_principal->show();
+    janela_principal->end();
   } // Fl_Double_Window* janela_principal
   return janela_principal;
 }
@@ -78,7 +78,7 @@ Fl_Double_Window* make_window() {
 void *evolve_routine(void*){
   //Instancing entities
   while(!QUIT){
-    printf("Evolving...\n"); //TODO: Substituir evolucao aqui
+    //printf("Evolving...\n"); //TODO: Substituir evolucao aqui
   }
   pthread_exit(NULL);
 }
@@ -86,12 +86,10 @@ void *evolve_routine(void*){
 int main(int argc, char **argv){
 
   fl_register_images(); 
-
-
+  make_window();
   //##### Opening threads #####//
   pthread_t evolution;
   pthread_create(&evolution, NULL, evolve_routine, NULL);
-  pthread_join(evolution, NULL);
   //###########################//
 
   return Fl::run();
