@@ -1,10 +1,10 @@
 OS := $(shell uname -s)
 
 ifeq ($(OS),Linux)
-	FLAGS := -lpthread	-lfltk	-w
+	FLAGS := -lpthread	-lfltk	-lfltk-images	-w
 endif
 ifeq ($(OS),Darwin)
-		FLAGS := -lpthread	-lfltk	-w
+		FLAGS := -lpthread	-lfltk	-lfltk-images	-w
 endif
 
 ifeq ($(OS),Linux)
