@@ -9,10 +9,6 @@
 #define radius_entity 0.01
 #define initial_x 0
 #define initial_y 0
-#define initial_mutation 0.02
-
-#define gmf 2.45
-#define population 20
 
 typedef struct mov{
   char direcao;

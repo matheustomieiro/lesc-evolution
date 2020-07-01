@@ -8,8 +8,11 @@
 #include "../../headers/gui.h"
 
 using namespace std;
-
 int QUIT = false;
+
+int population = 0;
+int fmg_value = 0;
+int initial_mutation = 0.00;
 
 Fl_Double_Window *janela_principal=(Fl_Double_Window *)0;
 Fl_Return_Button *start=(Fl_Return_Button *)0;
@@ -21,8 +24,11 @@ Fl_Box *background = (Fl_Box*)0;
 
 static void start_listener(Fl_Return_Button*, void*){
   fmg->deactivate();
+  fmg_value = fmg->value();
   populacao->deactivate();
+  population = populacao->value();
   mutacao_inicial->deactivate();
+  initial_mutation = mutacao_inicial->value();
   start->deactivate();
 }
 
