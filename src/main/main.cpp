@@ -8,7 +8,6 @@
 #include "../../headers/gui.h"
 
 using namespace std;
-
 int QUIT = false;
 
 Fl_Double_Window *janela_principal=(Fl_Double_Window *)0;
