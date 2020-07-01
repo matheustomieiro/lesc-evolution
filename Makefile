@@ -1,8 +1,21 @@
-all_linux:	evolution
-	g++	-o	release/Main.o	bin/base.o	src/main/main.cpp	-lpthread	-lglut	-lGLU	-lGL	-w
+OS := $(shell uname -s)
 
-all_mac:	evolution
-	g++	-o	release/Main.o	bin/base.o	src/main/main.cpp	-I/usr/local/include	-lpthread	-framework	OpenGL	-framework	GLUT	-w
+ifeq ($(OS),Linux)
+	FLAGS := -lpthread	-lglut	-lGLU	-lGL	-w
+endif
+ifeq ($(OS),Darwin)
+		FLAGS := -lpthread	-framework	OpenGL	-framework	GLUT	-w
+endif
+
+ifeq ($(OS),Linux)
+	LIBS := sudo apt install mesa-common-dev
+endif
+ifeq ($(OS),Darwin)
+		LIBS := brew install freeglut3
+endif
+
+all:	evolution
+	g++	-o	release/Main.o	bin/base.o	src/main/main.cpp	$(FLAGS)
 
 evolution:
 	g++	-c	src/evolution/base.cpp
@@ -11,8 +24,8 @@ evolution:
 clean:
 	rm bin/*
 
-install_lib:
-	sudo apt install mesa-common-dev freeglut3-dev
+install_libs:
+	$(LIBS)
 
 run:
 	./release/Main.o

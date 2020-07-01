@@ -4,8 +4,8 @@
 #define screenWidth 640
 #define screenHeight 480
 
-#define speed 4
-#define rotation 0.5
+#define speed 5
+#define rotation 0.2
 #define radius_entity 0.01
 #define initial_x 0
 #define initial_y 0

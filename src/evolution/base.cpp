@@ -13,7 +13,6 @@ movimento new_movement(char mov_type, unsigned char qtd){
   aux.passos = qtd;
   return aux;
 }
-
 /*
 //Funcao que calcula uma funcao pre-definida
 //args: (double) x
