@@ -28,8 +28,8 @@ void rotate_entity(entity *e, float angle){
 void move_entity(entity *e, float d){
   e->x = e->x + d*speed*cos(e->theta);
   e->y = e->y + d*speed*sin(e->theta);
-  if(e->x > 1) e->x = -0.9; if(e->x < -1) e->x = 0.9;//X nao passa de 1 nem -1
-  if(e->y > 1) e->y = -0.9; if(e->y < -1) e->y = 0.9; //Y nao passa de 1 nem -1
+  if(e->x > 1) e->x = -0.9; if(e->x < -1) e->x = 0.9;//X stays between 1 and -1
+  if(e->y > 1) e->y = -0.9; if(e->y < -1) e->y = 0.9; //Y stays between 1 and -1
 }
 
 void draw_entity(entity e){
@@ -67,14 +67,13 @@ void timer(int){
     move_entity(&pop[i], 0.01 + i/10);
     rotate_entity(&pop[i], 0.15 + i/10);
   }
-  //Redesenhando
   glutPostRedisplay();
   glutTimerFunc(1000/60, timer, 0);
 }
 
 //Thread function to evolve A.G
 void *evolve_routine(void*){
-  //Instancia entidades
+  //Instancing entities
   while(!QUIT){
     printf("Evolving...\n"); //TODO: Substituir evolucao aqui
   }
@@ -86,8 +85,6 @@ int main(int argc, char **argv){
   for(int i=0; i<population; i++){
     setAtr(&pop[i], false, radius_entity, initial_x, initial_y, i/156+0.56, 0.5f, 0.35f, 0.05f);
   }
-
-  //Abrindo Gui
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGB);
   glutInitWindowSize(screenWidth, screenHeight);
@@ -95,10 +92,10 @@ int main(int argc, char **argv){
   glutCreateWindow("Labyrinth Escape Evolution");
   glClearColor(1.0, 1.0, 1.0, 1.0);
   glutDisplayFunc(draw);
-  glutTimerFunc(0, timer, 0);// Define qual será a função de loop
+  glutTimerFunc(0, timer, 0); //Defining the loop function
   glutMainLoop();
 
-  //##### Abrindo threads #####//
+  //##### Opening threads #####//
   pthread_t evolution;
   pthread_create(&evolution, NULL, evolve_routine, NULL);
   pthread_join(evolution, NULL);
