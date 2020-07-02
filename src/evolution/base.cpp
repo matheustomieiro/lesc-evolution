@@ -4,6 +4,8 @@
 #include <math.h>
 #include <ctime>
 
+using namespace std;
+
 movimento aux;
 
 movimento new_movement(char mov_type, unsigned char qtd){
@@ -13,16 +15,19 @@ movimento new_movement(char mov_type, unsigned char qtd){
 }
 
 
-void iniciaPop(entity* entities, int population){
-
+void iniciaPop(entity **entities, int population){
   int num_direcao, num_passos;
   char dir;
 
   for(int i = 0; i < population; i++){
     
-    srand(time(NULL));
+    entities[i]->dead = false;
+    entities[i]->x = initial_x;
+    entities[i]->y = initial_y;
 
-    num_direcao = rand()%4, num_passos = rand()%5 + 1;
+    srand(time(NULL));
+    num_direcao = rand()%4;
+    num_passos = rand()%5 + 1;
 
     switch (num_direcao){
       
@@ -39,13 +44,12 @@ void iniciaPop(entity* entities, int population){
         dir = 'r';
         break;
     }
-
-    entities[i].movimentos.push_back(new_movement(dir, num_passos));
-
+    entities[i]->movimentos = new std::vector<movimento>;
+    entities[i]->movimentos->push_back(new_movement(dir,num_passos));
   }
-  
 }
 
+/*
 void Transa(entity* entities, entity thebest, int population, int initial_mutation){
 
   movimento moves[2];
@@ -54,7 +58,7 @@ void Transa(entity* entities, entity thebest, int population, int initial_mutati
 
 
   for(int i = 0; i < population; i++){
-
+    
     srand(time(NULL));
 
     ind_rand = (int) ((rand()%population + (rand()%430/1000.0 +  thebest.x*(rand()%388)/1000.0 + thebest.x*(rand()%588)/1000))*(initial_mutation))%population;
@@ -81,24 +85,26 @@ void Transa(entity* entities, entity thebest, int population, int initial_mutati
   }
 }
 
+// Funcao que avalia uma populacao e define o melhor da geração e o melhor de todas as gerações
+void avaliar(entity* entities, entity *best, entity *thebestofthebest){
 
-/*
-//Funcao que calcula uma funcao pre-definida
-//args: (double) x
-double PreFunction(double x){
-  return (2*cos(0.39*x)) + (5*sin(0.5*x)) + (0.5*cos(0.1*x)) + (10*sin(0.7*x)) + (5*sin(1*x)) + (5*sin(0.35*x));
-}
+  double melhor_dist = 0,dist;
 
-// Funcao que avalia uma populacao e define o melhor e o pior
-void Avaliar(){
-  for(int x = 1; x <= TAMPOPULACAO; x++){
-    if(f[x] > f[MELHOR]) MELHOR = x;
-    if(f[x] < f[PIOR]) PIOR = x;
+  melhor_dist =  sqrt(pow(abs(entities[0].x - 18),2) + pow(abs(entities[0].y - 18),2));
+
+  for(int i = 1; i < population; i++){
+    
+    dist = sqrt(pow(abs(entities[i].x - 18),2) + pow(abs(entities[i].y - 18),2));      
+    if(dist < melhor_dist){
+      *best =  entities[i];
+      melhor_dist = dist; 
+    }
   }
-  if(THEBESTOFTHEBEST[1] < f[MELHOR]){
-    THEBESTOFTHEBEST[0] = POPULATION[MELHOR];
-    THEBESTOFTHEBEST[1] = f[MELHOR];
-  }
+
+  if(melhor_dist < sqrt(pow(abs(thebestofthebest->x - 18),2) + pow(abs(thebestofthebest->y - 18),2)))
+    *thebestofthebest = *best;
+
+  
 }
 
 void Transa(entity* entities, entity thebest){
@@ -140,8 +146,6 @@ void Transa(entity* entities, entity thebest){
         entities[i].x = (abs(auxx-mapWidth))%population;
       }
     }
-
-    //f[i] = PreFunction(POPULATION[i]);
 
   }
 }

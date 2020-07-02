@@ -15,4 +15,5 @@ extern Fl_Value_Input *mutacao_inicial;
 extern Fl_PNG_Image *png;
 #include <FL/Fl_Box.H>
 extern Fl_Box *background;
+#include <FL/fl_draw.H>
 #endif
