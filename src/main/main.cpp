@@ -137,8 +137,8 @@ static void setInitialTheBest(){
   thebestofthebest = (entity*)malloc(sizeof(entity));
   thebest = (entity*)malloc(sizeof(entity));
   thebestofthebest->dead = true;
-  thebestofthebest->movimentos = new std::vector<movimento>;
-  thebest->movimentos = new std::vector<movimento>;
+  thebestofthebest->movimentos = (movimento*)malloc(sizeof(movimento)*vector_size);
+  thebest->movimentos = (movimento*)malloc(sizeof(movimento)*vector_size);
   thebestofthebest->x = 1;
   thebestofthebest->y = 1;
 }
@@ -157,9 +157,14 @@ int main(int argc, char **argv){
 
   Fl::run();
 
+  free(thebest->movimentos);
+  free(thebestofthebest->movimentos);
   free(thebest);
   free(thebestofthebest);
-  for(int i=0; i<population; i++) free(cockroaches[i]);
+  for(int i=0; i<population; i++){
+    free(cockroaches[i]->movimentos);
+    free(cockroaches[i]);
+  }
   free(cockroaches);
   
   return EXIT_SUCCESS;

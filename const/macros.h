@@ -7,6 +7,7 @@
 #define screenWidth 640
 #define screenHeight 480
 #define frames 0.1
+#define vector_size 100
 
 #define initial_x 1
 #define initial_y 1
@@ -20,7 +21,8 @@ typedef struct ent{
   bool dead;
   unsigned char x;
   unsigned char y;
-  std::vector<movimento> *movimentos;
+  unsigned char passos_totais;
+  movimento *movimentos;
 }entity;
 
 #endif

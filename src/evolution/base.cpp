@@ -19,10 +19,10 @@ void iniciaPop(entity **entities, int population){
   char dir;
 
   for(int i = 0; i < population; i++){
-    
     entities[i]->dead = false;
     entities[i]->x = initial_x;
     entities[i]->y = initial_y;
+    entities[i]->passos_totais = 0;
 
     srand(time(NULL));
     num_direcao = rand()%4;
@@ -43,8 +43,10 @@ void iniciaPop(entity **entities, int population){
         dir = 'r';
         break;
     }
-    entities[i]->movimentos = new std::vector<movimento>;
-    entities[i]->movimentos->push_back(new_movement(dir,num_passos));
+    entities[i]->movimentos = (movimento*)malloc(sizeof(movimento)*vector_size);
+    entities[i]->movimentos[entities[i]->passos_totais].direcao = dir;
+    entities[i]->movimentos[entities[i]->passos_totais].passos = num_passos;
+    entities[i]->passos_totais++;
   }
 }
 
@@ -59,8 +61,8 @@ void Transa(entity **entities, entity *thebest, entity *thebestofthebest, int po
 
     ind_rand = (int) ((rand()%population + (rand()%430/1000.0 +  thebestofthebest->x*((rand()%388)/1000.0) + thebest->x*((rand()%588)/1000)))*(mutation))%population;
 
-    moves[0] = entities[ind_rand]->movimentos->at(entities[ind_rand]->movimentos->size() - 1);
-    moves[1] = entities[i]->movimentos->at(entities[ind_rand]->movimentos->size() - 1);
+    moves[0] = entities[ind_rand]->movimentos[entities[ind_rand]->passos_totais - 1];
+    moves[1] = entities[i]->movimentos[entities[ind_rand]->passos_totais - 1];
 
     rand_dir[0] = moves[0].direcao;
     rand_dir[1] = moves[1].direcao;
@@ -73,9 +75,10 @@ void Transa(entity **entities, entity *thebest, entity *thebestofthebest, int po
     if(moves[0].passos > moves[1].passos) chosen_passos = moves[0].passos;
     else{
       chosen_passos = moves[1].passos;
-    } 
-    //Problema aqui???
-    //entities[i]->movimentos->push_back(new_movement(chosen_mov, chosen_passos));
+    }
+
+    entities[i]->movimentos[entities[i]->passos_totais] = new_movement(chosen_mov, chosen_passos);
+    entities[i]->passos_totais++;
 
     if(chosen_mov == 'u'){
       entities[i]->x = entities[i]->x + 1;
@@ -103,10 +106,10 @@ void Avalia(entity **entities, int population, entity *thebest, entity *thebesto
     if(!entities[i]->dead){
       dist = sqrt(pow(abs(entities[i]->x - 18),2) + pow(abs(entities[i]->y - 18),2));      
       if(dist < melhor_dist){
-        thebest->x =  entities[i]->x;
+        thebest->x = entities[i]->x;
         thebest->y = entities[i]->y;
         thebest->dead = entities[i]->dead;
-        thebest->movimentos = entities[i]->movimentos;
+        *(thebest->movimentos) = *(entities[i]->movimentos);
         melhor_dist = dist; 
       }
     }
