@@ -82,6 +82,27 @@ void Transa(entity* entities, entity thebest){
   }
 }
 
+// Funcao que avalia uma populacao e define o melhor da geração e o melhor de todas as gerações
+void avaliar(entity* entities, entity *best, entity *thebestofthebest){
+
+  double melhor_dist = 0,dist;
+
+  melhor_dist =  sqrt(pow(abs(entities[0].x - 18),2) + pow(abs(entities[0].y - 18),2));
+
+  for(int i = 1; i < population; i++){
+    
+    dist = sqrt(pow(abs(entities[i].x - 18),2) + pow(abs(entities[i].y - 18),2));      
+    if(dist < melhor_dist){
+      *best =  entities[i];
+      melhor_dist = dist; 
+    }
+  }
+
+  if(melhor_dist < sqrt(pow(abs(thebestofthebest->x - 18),2) + pow(abs(thebestofthebest->y - 18),2)))
+    *thebestofthebest = *best;
+
+  
+}
 
 /*
 //Funcao que calcula uma funcao pre-definida
