@@ -4,6 +4,8 @@
 #include <math.h>
 #include <ctime>
 
+using namespace std;
+
 movimento aux;
 
 movimento new_movement(char mov_type, unsigned char qtd){
@@ -13,16 +15,19 @@ movimento new_movement(char mov_type, unsigned char qtd){
 }
 
 
-void iniciaPop(entity* entities, int population){
-
+void iniciaPop(entity **entities, int population){
   int num_direcao, num_passos;
   char dir;
 
   for(int i = 0; i < population; i++){
     
-    srand(time(NULL));
+    entities[i]->dead = false;
+    entities[i]->x = initial_x;
+    entities[i]->y = initial_y;
 
-    num_direcao = rand()%4, num_passos = rand()%5 + 1;
+    srand(time(NULL));
+    num_direcao = rand()%4;
+    num_passos = rand()%5 + 1;
 
     switch (num_direcao){
       
@@ -39,13 +44,12 @@ void iniciaPop(entity* entities, int population){
         dir = 'r';
         break;
     }
-
-    entities[i].movimentos.push_back(new_movement(dir, num_passos));
-
+    entities[i]->movimentos = new std::vector<movimento>;
+    entities[i]->movimentos->push_back(new_movement(dir,num_passos));
   }
-  
 }
 
+/*
 void Transa(entity* entities, entity thebest, int population, int initial_mutation){
 
   movimento moves[2];
@@ -54,7 +58,7 @@ void Transa(entity* entities, entity thebest, int population, int initial_mutati
 
 
   for(int i = 0; i < population; i++){
-
+    
     srand(time(NULL));
 
     ind_rand = (int) ((rand()%population + (rand()%430/1000.0 +  thebest.x*(rand()%388)/1000.0 + thebest.x*(rand()%588)/1000))*(initial_mutation))%population;
