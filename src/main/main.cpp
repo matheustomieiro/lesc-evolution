@@ -17,12 +17,13 @@ int QUIT = false;
 bool start_pressed = false;
 int population = 0;
 int fmg_value = 0;
-int initial_mutation = 0.00;
+float initial_mutation = 0.00;
+int gen = 0;
 struct timespec tim, tim2;
 
 entity **cockroaches;
 entity *thebestofthebest;
-entity *thebest;
+int *thebest;
 
 class Entity_Shape: public Fl_Widget {
   void draw(){
@@ -51,6 +52,7 @@ Fl_Value_Input *populacao=(Fl_Value_Input *)0;
 Fl_Value_Input *mutacao_inicial=(Fl_Value_Input *)0;
 Fl_PNG_Image *png = (Fl_PNG_Image *)0;
 Fl_Box *background = (Fl_Box*)0;
+Fl_Box *generation = (Fl_Box*)0;
 Entity_Shape *entities_on_matrix = (Entity_Shape*)0;
 
 static void update(void*){
@@ -66,7 +68,7 @@ static void start_listener(Fl_Return_Button*, void*){
   populacao->deactivate();
   population = (int)floor(populacao->value());
   mutacao_inicial->deactivate();
-  initial_mutation = mutacao_inicial->value();
+  initial_mutation = (float)mutacao_inicial->value();
   start->deactivate();
   cockroaches = (entity**)malloc(population*sizeof(entity*));
   for(int i=0; i<population; i++) cockroaches[i] = (entity*)malloc(sizeof(entity));
@@ -89,10 +91,14 @@ Fl_Double_Window* make_window() {
     { // Imagem do cenario
       background = new Fl_Box(375,20,400,400);
       //background->box(FL_SHADOW_BOX);
-      png = new Fl_PNG_Image("img/map.png");
+      png = new Fl_PNG_Image("img/map2.png");
       background->image(png);
       entities_on_matrix = new Entity_Shape(375,20,400,400);
       entities_on_matrix->hide();
+      generation = new Fl_Box(375,440,400,20);
+      generation->label("GERACAO : 0");
+      generation->box(FL_THIN_UP_BOX);
+      generation->color((Fl_Color)238);
     } // Fl_Box* image
     { // Comeca o ciclo de evolucao
       start = new Fl_Return_Button(150, 180, 115, 30, "INICIAR");
@@ -149,30 +155,34 @@ void *evolve_routine(void*){
   //Instancing entities
   while(!QUIT){
     if(start_pressed){
-      restart_pop();
-      nanosleep(&tim,&tim2);
-      while(!all_dead()){
+        gen++;
         for(int j=0; j<vector_size; j++){
+          if(all_dead()) break;
           for(int i=0; i<population; i++){
-            if(!cockroaches[i]->dead){
-              if(cockroaches[i]->movimentos[j] == 0) continue;
-              else if(cockroaches[i]->movimentos[j] == 'r'){
+            if(j >= cockroaches[i]->passos_totais) cockroaches[i]->dead = true;
+            if(!cockroaches[i]->dead && cockroaches[i]->movimentos[j] != 'n'){
+              if(cockroaches[i]->movimentos[j] == 'd'){
                 cockroaches[i]->x += 1;
-              }else if(cockroaches[i]->movimentos[j] == 'l'){
+              }else if(cockroaches[i]->movimentos[j] == 'c'){
                 cockroaches[i]->x -= 1;
-              }else if(cockroaches[i]->movimentos[j] == 'd'){
+              }else if(cockroaches[i]->movimentos[j] == 'b'){
                 cockroaches[i]->y -= 1;
-              }else if(cockroaches[i]->movimentos[j] == 'u'){  
+              }else if(cockroaches[i]->movimentos[j] == 'a'){  
                 cockroaches[i]->y += 1;
               }
+              if(map[mapWidth-1 - cockroaches[i]->y][cockroaches[i]->x] == 1) cockroaches[i]->dead =true; //morre ao pisar numa parede
             }
-            if(map[mapWidth-1 - cockroaches[i]->y][cockroaches[i]->x] == 1) cockroaches[i]->dead =true; //morre ao pisar numa parede
           }
+          nanosleep(&tim,&tim2);
         }
-        nanosleep(&tim,&tim2);
-      }
-      //Transa(cockroaches,thebest,thebestofthebest,population,initial_mutation,map);
-      //Avalia(cockroaches,population,thebest,thebestofthebest,initial_mutation);
+      nanosleep(&tim,&tim2);
+      Avalia(cockroaches,population,thebest,thebestofthebest,initial_mutation,map);
+      Transa(cockroaches,thebest,thebestofthebest,population,initial_mutation);
+      restart_pop();
+      string aux_gen;
+      aux_gen.append("GERACAO : ");
+      aux_gen.append(to_string(gen));
+      generation->label(aux_gen.c_str());
     }
   }
   pthread_exit(NULL);
@@ -180,18 +190,17 @@ void *evolve_routine(void*){
 
 static void setInitialTheBest(){
   thebestofthebest = (entity*)malloc(sizeof(entity));
-  thebest = (entity*)malloc(sizeof(entity));
+  thebest = (int*)malloc(sizeof(int));
+  *thebest = 0;
   thebestofthebest->dead = true;
   thebestofthebest->movimentos = (char*)malloc(sizeof(char)*vector_size);
-  thebest->movimentos = (char*)malloc(sizeof(char)*vector_size);
-  thebestofthebest->x = 1;
-  thebestofthebest->y = 1;
+  thebestofthebest->x = initial_x;
+  thebestofthebest->y = initial_y;
 }
 
 int main(int argc, char **argv){
-
   tim.tv_sec  = 0;
-  tim.tv_nsec = frames*20*100000000L;
+  tim.tv_nsec = 50000000L;
 
   setInitialTheBest();
 
@@ -205,9 +214,8 @@ int main(int argc, char **argv){
 
   Fl::run();
 
-  free(thebest->movimentos);
-  free(thebestofthebest->movimentos);
   free(thebest);
+  free(thebestofthebest->movimentos);
   free(thebestofthebest);
   for(int i=0; i<population; i++){
     free(cockroaches[i]->movimentos);
