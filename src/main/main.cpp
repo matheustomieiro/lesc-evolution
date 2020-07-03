@@ -8,10 +8,11 @@
 #include "../../headers/gui.h"
 #include "../../headers/base.h"
 #include <unistd.h>
+#include <math.h>
 
 using namespace std;
 
-int QUIT = false;
+int QUIT = false, START = false;
 int population = 0;
 int fmg_value = 0;
 int initial_mutation = 0.00;
@@ -60,16 +61,18 @@ static void start_listener(Fl_Return_Button*, void*){
   fmg->deactivate();
   fmg_value = fmg->value();
   populacao->deactivate();
-  population = populacao->value();
+  population = (int)floor(populacao->value());
   mutacao_inicial->deactivate();
   initial_mutation = mutacao_inicial->value();
   start->deactivate();
-
   cockroaches = (entity**)malloc(population*sizeof(entity*));
   for(int i=0; i<population; i++) cockroaches[i] = (entity*)malloc(sizeof(entity));
   iniciaPop(cockroaches,population);
   entities_on_matrix->show();
-  Fl::add_timeout(0.1,update);
+  entities_on_matrix->redraw();
+  janela_principal->redraw();
+  START = true;
+  //Fl::add_timeout(0.1,update);
 }
 
 /**
@@ -122,13 +125,71 @@ Fl_Double_Window* make_window() {
   return janela_principal;
 }
 
+bool all_dead(){
+  bool is_all_dead = true;
+  for(int i=0; i<population; i++){
+    if(!cockroaches[i]->dead) is_all_dead = false; 
+  }
+  return is_all_dead;
+}
+
+void restart_pop(){
+  for(int i=0; i<population; i++){
+    cockroaches[i]->x = initial_x;
+    cockroaches[i]->y = initial_y;
+    cockroaches[i]->dead = false;
+  }
+}
+
 //Thread function to evolve A.G
 void *evolve_routine(void*){
   //Instancing entities
   while(!QUIT){
-    Transa(cockroaches,thebest,thebestofthebest,population,initial_mutation,map);
-    sleep(1);
-    Avalia(cockroaches,population,thebest,thebestofthebest,initial_mutation);
+    if(START){
+      entities_on_matrix->redraw();
+      janela_principal->redraw();
+      for(int p=0; p<40; p++){
+        for(int i=0; i<population; i++){
+          for(int j=0; j<cockroaches[i]->passos_totais; j++){
+            printf("X: %u\tY: %u\tD: %c\n",cockroaches[i]->x,cockroaches[i]->y,cockroaches[i]->movimentos[j].direcao);
+            if(cockroaches[i]->movimentos[j].direcao == 'r'){
+              if(cockroaches[i]->x + cockroaches[i]->movimentos[j].passos < mapWidth && map[cockroaches[i]->x][mapHeight-1 - cockroaches[i]->y] == 0){
+                cockroaches[i]->x += 1;
+              }else
+                cockroaches[i]->dead = true;
+            }
+            else if(cockroaches[i]->movimentos[j].direcao == 'l'){
+              if(cockroaches[i]->x - cockroaches[i]->movimentos[j].passos > 0 && map[cockroaches[i]->x][mapHeight-1 - cockroaches[i]->y] == 0){
+                cockroaches[i]->x -= 1;
+              }else
+                cockroaches[i]->dead = true;
+            }
+            else if(cockroaches[i]->movimentos[j].direcao == 'd'){
+              if(cockroaches[i]->y - cockroaches[i]->movimentos[j].passos > 0 && map[cockroaches[i]->x][mapHeight-1 - cockroaches[i]->y] == 0){
+              cockroaches[i]->y -= 1;
+              }else
+                cockroaches[i]->dead = true;
+            }
+            else if(cockroaches[i]->movimentos[j].direcao == 'u'){
+              if(cockroaches[i]->y + cockroaches[i]->movimentos[j].passos < mapHeight && map[cockroaches[i]->x][mapHeight-1 - cockroaches[i]->y] == 0){
+              cockroaches[i]->y += 1;
+              }else
+                cockroaches[i]->dead = true;
+            }
+          }
+        }
+        sleep(1);
+        entities_on_matrix->redraw();
+        janela_principal->redraw();
+      }
+      //Transa(cockroaches,thebest,thebestofthebest,population,initial_mutation,map);
+      usleep(1);
+      //Avalia(cockroaches,population,thebest,thebestofthebest,initial_mutation);
+      printf("X: %u\tY: %u\tD: %c\n",cockroaches[0]->x,cockroaches[0]->y,cockroaches[0]->movimentos[0].direcao);
+      restart_pop();
+      entities_on_matrix->redraw();
+      janela_principal->redraw();
+    }
   }
   pthread_exit(NULL);
 }

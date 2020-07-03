@@ -25,8 +25,9 @@ void iniciaPop(entity **entities, int population){
     entities[i]->passos_totais = 0;
 
     srand(time(NULL));
-    num_direcao = rand()%4;
-    num_passos = rand()%5 + 1;
+    
+    num_direcao = (rand()+i)%4;
+    num_passos = 1;
 
     switch (num_direcao){
       
@@ -59,7 +60,7 @@ void Transa(entity **entities, entity *thebest, entity *thebestofthebest, int po
   for(int i = 0; i < population; i++){
     srand(time(NULL));
 
-    ind_rand = (int) ((rand()%population + (rand()%430/1000.0 +  thebestofthebest->x*((rand()%388)/1000.0) + thebest->x*((rand()%588)/1000)))*(mutation))%population;
+    ind_rand = (int) ((rand()%population + (rand()%430/1000.0 +  thebestofthebest->x*((rand()%388)/1000.0) + thebest->x*((rand()%588)/1000)))*(mutation))%(population-1);
 
     moves[0] = entities[ind_rand]->movimentos[entities[ind_rand]->passos_totais - 1];
     moves[1] = entities[i]->movimentos[entities[ind_rand]->passos_totais - 1];
@@ -79,20 +80,6 @@ void Transa(entity **entities, entity *thebest, entity *thebestofthebest, int po
 
     entities[i]->movimentos[entities[i]->passos_totais] = new_movement(chosen_mov, chosen_passos);
     entities[i]->passos_totais++;
-
-    if(chosen_mov == 'u'){
-      entities[i]->x = entities[i]->x + 1;
-    }
-    else if(chosen_mov == 'd'){
-      entities[i]->x = entities[i]->x - 1;
-    }
-    else if(chosen_mov == 'l'){
-      entities[i]->y = entities[i]->y - 1;
-    }
-    else if(chosen_mov == 'r'){
-      entities[i]->y = entities[i]->y + 1;
-    }
-    if(map[mapWidth - entities[i]->x][mapHeight - entities[i]->y]) entities[i]->dead = true;
   }
 }
 
