@@ -64,26 +64,22 @@ void iniciaPop(entity **entities, int population){
 void Transa(entity **entities, int *thebest, entity *thebestofthebest, int population, float mutation){
 
   for(int i = 0; i < population; i++){
-    srand(time(NULL));
-    rand();rand();rand();
-
-    char dir = traduz_direcao((rand()+i)%4);
 
     if(entities[i]->passos_totais < vector_size){
       //Misturar genes para o individuo i
       
       for(int n=0; n<vector_size; n++){
         if(n > entities[i]->passos_totais || n > entities[*thebest]->passos_totais) break;
-        entities[i]->movimentos[n] = traduz_direcao((int)(((traduz_num_direcao(entities[i]->movimentos[n]) + traduz_num_direcao(entities[*thebest]->movimentos[n])))/2));
-        int aux_mut = traduz_num_direcao(entities[i]->movimentos[n]) + (((pow(-1,rand()%2+1))*(rand()%4)) * mutation);
-        if(aux_mut < 0) entities[i]->movimentos[n] = traduz_direcao(-aux_mut);
-        else if(aux_mut > 3) entities[i]->movimentos[n] = traduz_direcao(aux_mut-entities[i]->movimentos[n]);
+        entities[i]->movimentos[n] = traduz_direcao((int)((( (traduz_num_direcao(entities[i]->movimentos[n])*0.4) + (traduz_num_direcao(entities[*thebest]->movimentos[n])*0.2) + (traduz_num_direcao(entities[rand()%4]->movimentos[n])*0.2) + (traduz_num_direcao(thebestofthebest->movimentos[n])*0.2) ))));
+        int aux_mut = traduz_num_direcao(entities[i]->movimentos[n]) + (((pow(-1,rand()%2+1))*(rand()%4)) * mutation*113);
+        if(aux_mut < 0) entities[i]->movimentos[n] = traduz_direcao((-aux_mut)%4);
+        else if(aux_mut > 3) entities[i]->movimentos[n] = traduz_direcao((aux_mut-entities[i]->movimentos[n])%4);
         else entities[i]->movimentos[n] = traduz_direcao(aux_mut);
       }
 
       //Fim da mistura
       
-      entities[i]->movimentos[entities[i]->passos_totais] = dir;
+      entities[i]->movimentos[entities[i]->passos_totais] = traduz_direcao((rand()%4000)/1000);
       entities[i]->passos_totais++;
     }
 
@@ -97,7 +93,7 @@ void Avalia(entity **entities, int population, int *thebest, entity *thebestofth
   melhor_dist =  mapWidth*2;
 
   for(int i = 0; i < population; i++){
-      dist = (sqrt(pow(end_x - entities[i]->x,2) + pow(end_y - entities[i]->y,2))*0.7) - (entities[i]->passos_totais*0.3);  
+      dist = (sqrt(pow(end_x - entities[i]->x,2) + pow(end_y - entities[i]->y,2)));  
       if(dist < melhor_dist){
         *thebest = i;
         melhor_dist = dist; 
