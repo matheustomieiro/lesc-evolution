@@ -1,7 +1,6 @@
 #ifndef macros_h
 #define macros_h
 
-#include <vector>
 #define mapWidth 20
 #define mapHeight 20
 #define screenWidth 640
