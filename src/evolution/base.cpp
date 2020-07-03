@@ -2,167 +2,114 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include <math.h>
-#include <ctime>
+#include <time.h>
 
 using namespace std;
 
-movimento aux;
-
-movimento new_movement(char mov_type, unsigned char qtd){
-  aux.direcao = mov_type;
-  aux.passos = qtd;
-  return aux;
+char traduz_direcao(int num_direcao){
+    switch (num_direcao){
+      case 0:
+        return 'a';
+      case 1:
+        return 'b';
+      case 2:
+        return 'c';
+        break;
+      case 3:
+        return 'd';
+    }
+    return 'n';
 }
 
+int traduz_num_direcao(char direcao){
+    switch (direcao){
+      case 'a':
+        return 0;
+      case 'b':
+        return 1;
+      case 'c':
+        return 2;
+        break;
+      case 'd':
+        return 3;
+    }
+    return 4;
+}
+
+
 void iniciaPop(entity **entities, int population){
-  int num_direcao, num_passos;
+  int num_direcao;
   char dir;
 
   for(int i = 0; i < population; i++){
-    
     entities[i]->dead = false;
     entities[i]->x = initial_x;
     entities[i]->y = initial_y;
+    entities[i]->passos_totais = 0;
 
     srand(time(NULL));
-    num_direcao = rand()%4;
-    num_passos = rand()%5 + 1;
+    rand();rand();rand();
+    
+    num_direcao = traduz_direcao((rand()+i)%4);
 
-    switch (num_direcao){
-      
-      case 0:
-        dir = 'u';
-        break;
-      case 1:
-        dir = 'd';
-        break;
-      case 2:
-        dir = 'l';
-        break;
-      case 3:
-        dir = 'r';
-        break;
+    entities[i]->movimentos = (char*)malloc(vector_size*sizeof(char));
+    for(int j=0; j<vector_size; j++){
+      entities[i]->movimentos[j] = 'n';
     }
-    entities[i]->movimentos = new std::vector<movimento>;
-    entities[i]->movimentos->push_back(new_movement(dir,num_passos));
+    entities[i]->movimentos[entities[i]->passos_totais] = dir;
+    entities[i]->passos_totais++;
   }
 }
 
-void Transa(entity **entities, entity *thebest, entity *thebestofthebest, int population, float mutation, const unsigned char map[mapWidth][mapHeight]){
-
-  movimento moves[2];
-  char chosen_mov, rand_dir[2];
-  int ind_rand,chosen_passos, rand_passos;
+void Transa(entity **entities, int *thebest, entity *thebestofthebest, int population, float mutation){
 
   for(int i = 0; i < population; i++){
     srand(time(NULL));
+    rand();rand();rand();
 
-    ind_rand = (int) ((rand()%population + (rand()%430/1000.0 +  thebestofthebest->x*((rand()%388)/1000.0) + thebest->x*((rand()%588)/1000)))*(mutation))%population;
+    char dir = traduz_direcao((rand()+i)%4);
 
-    moves[0] = entities[ind_rand]->movimentos->at(entities[ind_rand]->movimentos->size() - 1);
-    moves[1] = entities[i]->movimentos->at(entities[ind_rand]->movimentos->size() - 1);
+    if(entities[i]->passos_totais < vector_size){
+      //Misturar genes para o individuo i
+      
+      for(int n=0; n<vector_size; n++){
+        if(n > entities[i]->passos_totais || n > entities[*thebest]->passos_totais) break;
+        entities[i]->movimentos[n] = traduz_direcao((int)(((traduz_num_direcao(entities[i]->movimentos[n]) + traduz_num_direcao(entities[*thebest]->movimentos[n])))/2));
+        int aux_mut = traduz_num_direcao(entities[i]->movimentos[n]) + (((pow(-1,rand()%2+1))*(rand()%4)) * mutation);
+        if(aux_mut < 0) entities[i]->movimentos[n] = traduz_direcao(-aux_mut);
+        else if(aux_mut > 3) entities[i]->movimentos[n] = traduz_direcao(aux_mut-entities[i]->movimentos[n]);
+        else entities[i]->movimentos[n] = traduz_direcao(aux_mut);
+      }
 
-    rand_dir[0] = moves[0].direcao;
-    rand_dir[1] = moves[1].direcao;
-
-    if(rand_dir[0] == rand_dir[1]) chosen_mov = rand_dir[0];
-    else{
-      chosen_mov = rand_dir[rand()%2];
+      //Fim da mistura
+      
+      entities[i]->movimentos[entities[i]->passos_totais] = dir;
+      entities[i]->passos_totais++;
     }
 
-    if(moves[0].passos > moves[1].passos) chosen_passos = moves[0].passos;
-    else{
-      chosen_passos = moves[1].passos;
-    } 
-    //Problema aqui???
-    //entities[i]->movimentos->push_back(new_movement(chosen_mov, chosen_passos));
-
-    if(chosen_mov == 'u'){
-      entities[i]->x = entities[i]->x + 1;
-    }
-    else if(chosen_mov == 'd'){
-      entities[i]->x = entities[i]->x - 1;
-    }
-    else if(chosen_mov == 'l'){
-      entities[i]->y = entities[i]->y - 1;
-    }
-    else if(chosen_mov == 'r'){
-      entities[i]->y = entities[i]->y + 1;
-    }
-    if(map[mapWidth - entities[i]->x][mapHeight - entities[i]->y]) entities[i]->dead = true;
   }
 }
 
 // Funcao que avalia uma populacao e define o melhor da geração e o melhor de todas as gerações
-void Avalia(entity **entities, int population, entity *thebest, entity *thebestofthebest, float mutation){
-
-  double melhor_dist = 0,dist;
+void Avalia(entity **entities, int population, int *thebest, entity *thebestofthebest, float mutation, const unsigned char map[mapWidth][mapHeight]){
+  thebestofthebest->dead = false;
+  int melhor_dist = 0,dist;
   melhor_dist =  mapWidth*2;
 
   for(int i = 0; i < population; i++){
-    if(!entities[i]->dead){
-      dist = sqrt(pow(abs(entities[i]->x - 18),2) + pow(abs(entities[i]->y - 18),2));      
+      dist = (sqrt(pow(end_x - entities[i]->x,2) + pow(end_y - entities[i]->y,2))*0.7) - (entities[i]->passos_totais*0.3);  
       if(dist < melhor_dist){
-        thebest->x =  entities[i]->x;
-        thebest->y = entities[i]->y;
-        thebest->dead = entities[i]->dead;
-        thebest->movimentos = entities[i]->movimentos;
+        *thebest = i;
         melhor_dist = dist; 
       }
-    }
   }
-
-  if(melhor_dist < sqrt(pow(abs(thebestofthebest->x - 18),2) + pow(abs(thebestofthebest->y - 18),2))){
-    thebestofthebest->x = thebest->x;
-    thebestofthebest->y = thebest->y;
-    thebestofthebest->dead = thebest->dead;
-    thebestofthebest->movimentos = thebest->movimentos;
-  }
-
-}
-
-/*
-void Transa(entity* entities, entity thebest){
-
-  char mov_rand[2];
-
-  for(int i = 0; i < population; i++){
-
-    if(entities[i].r != thebest.r && entities[i].g != thebest.g && entities[i].b != thebest.b){
-      srand(time(NULL));
-      //revisar
-      entities[i] = (entities[i].x + entities[floor(rand()%population)].x*((rand()%430)/1000.0) +  (thebest.x*(rand()%388)/1000.0) + (THEBESTOFTHEBEST[0]*(rand()%588)/1000))/(rand()%4);
-
-      //POPULATION[math.floor(math.random(1,TAMPOPULATION))]*((math.random(0,429))/1000.0)) + (POPULATION[MELHOR]*((math.random(0,387))/1000.0)) + (THEBESTOFTHEBEST[1]*((math.random(0,587))/1000.0)))/math.floor(math.random(1, 3))   
-    }
-
-    double auxx = (entities[i].x + (rand()%(mapWidth - (-mapWidth)))*(initial_mutation));
-    double auxy = (entities[i].y + (rand()%(mapHeight - (-mapHeight)))*(initial_mutation));
-
-    if(auxy < mapHeight && auxx > 0){
-      entities[i].y = auxy;
-    }else{
-      if(auxy > mapHeight){
-        entities[i].y = (mapHeight-abs(auxx-mapWidth))%population;
-      }
-      else{
-        entities[i].x = (abs(auxx-mapWidth))%population;
-      }
-    }
   
-
-    if(auxx < mapWidth && auxx > 0){
-      entities[i].x = auxx;
-    }else{
-      if(auxx > mapWidth){
-        entities[i].x = (mapWidth-abs(auxx-mapWidth))%population;
-      }
-      else{
-        entities[i].x = (abs(auxx-mapWidth))%population;
-      }
+  if(melhor_dist < sqrt(pow((end_x - thebestofthebest->x),2) + pow(end_y - thebestofthebest->y,2)) && map[mapWidth-1 - entities[*thebest]->y][entities[*thebest]->x] != 1){
+    thebestofthebest->x = entities[*thebest]->x;
+    thebestofthebest->y = entities[*thebest]->y;
+    for(int i=0; i<vector_size; i++){
+      thebestofthebest->movimentos[i] = entities[*thebest]->movimentos[i];
     }
-
   }
-}
 
-*/
+}
