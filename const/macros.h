@@ -1,6 +1,8 @@
 #ifndef macros_h
 #define macros_h
 
+#define MATRIX_IMG "img/mapbase.png"
+
 #define mapWidth 20
 #define mapHeight 20
 #define screenWidth 640
