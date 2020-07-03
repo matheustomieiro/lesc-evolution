@@ -16,23 +16,23 @@ int population = 0;
 int fmg_value = 0;
 int initial_mutation = 0.00;
 
-char auxx[128];
-
 entity **cockroaches;
-entity thebest, thebestofthebest;
-
+entity *thebestofthebest;
+entity *thebest;
 
 class Entity_Shape: public Fl_Widget {
   void draw(){
     fl_push_clip(x(),y(),w(),h());
     fl_push_matrix();
-    fl_translate(8,200);
-    fl_color(FL_RED);
+    fl_color(66,27,22);
     for(int i=0; i<population; i++){
-      fl_circle(fl_transform_x(cockroaches[i]->x*200, cockroaches[i]->x),490+(-fl_transform_x(cockroaches[i]->y*200, cockroaches[i]->y)), radius_entity);
+      if(!cockroaches[i]->dead)
+        fl_rectf(x()+(cockroaches[i]->x*mapWidth)-1, y()+(380-(cockroaches[i]->y)*mapHeight)-1, mapWidth, mapHeight);
     }
-    fl_color(FL_YELLOW);
-    fl_circle(fl_transform_x(thebestofthebest.x*200, thebestofthebest.x),490+(-fl_transform_y(thebestofthebest.y*200, thebestofthebest.y)),radius_entity);
+    fl_color(167,114,17);
+    if(!thebestofthebest->dead){
+      fl_rectf(x()+(thebestofthebest->x*mapWidth)-1, y()+(380-(thebestofthebest->y)*mapHeight)-1, mapWidth, mapHeight);
+    }
     fl_pop_matrix();
     fl_pop_clip();
   }
@@ -49,6 +49,12 @@ Fl_PNG_Image *png = (Fl_PNG_Image *)0;
 Fl_Box *background = (Fl_Box*)0;
 Entity_Shape *entities_on_matrix = (Entity_Shape*)0;
 
+static void update(void*){
+  entities_on_matrix->redraw();
+  janela_principal->redraw();
+  Fl::repeat_timeout(frames, update);
+}
+
 
 static void start_listener(Fl_Return_Button*, void*){
   fmg->deactivate();
@@ -61,10 +67,9 @@ static void start_listener(Fl_Return_Button*, void*){
 
   cockroaches = (entity**)malloc(population*sizeof(entity*));
   for(int i=0; i<population; i++) cockroaches[i] = (entity*)malloc(sizeof(entity));
-  
   iniciaPop(cockroaches,population);
-
-  entities_on_matrix->redraw();
+  entities_on_matrix->show();
+  Fl::add_timeout(0.1,update);
 }
 
 /**
@@ -81,6 +86,7 @@ Fl_Double_Window* make_window() {
       png = new Fl_PNG_Image("img/map.png");
       background->image(png);
       entities_on_matrix = new Entity_Shape(375,20,400,400);
+      entities_on_matrix->hide();
     } // Fl_Box* image
     { // Comeca o ciclo de evolucao
       start = new Fl_Return_Button(150, 180, 115, 30, "INICIAR");
@@ -120,12 +126,26 @@ Fl_Double_Window* make_window() {
 void *evolve_routine(void*){
   //Instancing entities
   while(!QUIT){
-    //printf("Evolving...\n"); //TODO: Substituir evolucao aqui
+    Transa(cockroaches,thebest,thebestofthebest,population,initial_mutation,map);
+    sleep(1);
+    Avalia(cockroaches,population,thebest,thebestofthebest,initial_mutation);
   }
   pthread_exit(NULL);
 }
 
+static void setInitialTheBest(){
+  thebestofthebest = (entity*)malloc(sizeof(entity));
+  thebest = (entity*)malloc(sizeof(entity));
+  thebestofthebest->dead = true;
+  thebestofthebest->movimentos = new std::vector<movimento>;
+  thebest->movimentos = new std::vector<movimento>;
+  thebestofthebest->x = 1;
+  thebestofthebest->y = 1;
+}
+
 int main(int argc, char **argv){
+
+  setInitialTheBest();
 
   fl_register_images(); 
   make_window();
@@ -135,5 +155,12 @@ int main(int argc, char **argv){
   pthread_create(&evolution, NULL, evolve_routine, NULL);
   //###########################//
 
-  return Fl::run();
+  Fl::run();
+
+  free(thebest);
+  free(thebestofthebest);
+  for(int i=0; i<population; i++) free(cockroaches[i]);
+  free(cockroaches);
+  
+  return EXIT_SUCCESS;
 }

@@ -14,7 +14,6 @@ movimento new_movement(char mov_type, unsigned char qtd){
   return aux;
 }
 
-
 void iniciaPop(entity **entities, int population){
   int num_direcao, num_passos;
   char dir;
@@ -32,10 +31,10 @@ void iniciaPop(entity **entities, int population){
     switch (num_direcao){
       
       case 0:
-        dir = 'f';
+        dir = 'u';
         break;
       case 1:
-        dir = 'b';
+        dir = 'd';
         break;
       case 2:
         dir = 'l';
@@ -49,23 +48,19 @@ void iniciaPop(entity **entities, int population){
   }
 }
 
-/*
-void Transa(entity* entities, entity thebest, int population, int initial_mutation){
+void Transa(entity **entities, entity *thebest, entity *thebestofthebest, int population, float mutation, const unsigned char map[mapWidth][mapHeight]){
 
   movimento moves[2];
   char chosen_mov, rand_dir[2];
   int ind_rand,chosen_passos, rand_passos;
 
-
   for(int i = 0; i < population; i++){
-    
     srand(time(NULL));
 
-    ind_rand = (int) ((rand()%population + (rand()%430/1000.0 +  thebest.x*(rand()%388)/1000.0 + thebest.x*(rand()%588)/1000))*(initial_mutation))%population;
+    ind_rand = (int) ((rand()%population + (rand()%430/1000.0 +  thebestofthebest->x*((rand()%388)/1000.0) + thebest->x*((rand()%588)/1000)))*(mutation))%population;
 
-    moves[0] = entities[ind_rand].movimentos[entities[ind_rand].movimentos.size() - 1];
-
-    moves[1] = entities[i].movimentos[entities[ind_rand].movimentos.size() - 1];
+    moves[0] = entities[ind_rand]->movimentos->at(entities[ind_rand]->movimentos->size() - 1);
+    moves[1] = entities[i]->movimentos->at(entities[ind_rand]->movimentos->size() - 1);
 
     rand_dir[0] = moves[0].direcao;
     rand_dir[1] = moves[1].direcao;
@@ -79,34 +74,54 @@ void Transa(entity* entities, entity thebest, int population, int initial_mutati
     else{
       chosen_passos = moves[1].passos;
     } 
+    //Problema aqui???
+    //entities[i]->movimentos->push_back(new_movement(chosen_mov, chosen_passos));
 
-    entities[i].movimentos.push_back(new_movement(chosen_mov, chosen_passos));
-
+    if(chosen_mov == 'u'){
+      entities[i]->x = entities[i]->x + 1;
+    }
+    else if(chosen_mov == 'd'){
+      entities[i]->x = entities[i]->x - 1;
+    }
+    else if(chosen_mov == 'l'){
+      entities[i]->y = entities[i]->y - 1;
+    }
+    else if(chosen_mov == 'r'){
+      entities[i]->y = entities[i]->y + 1;
+    }
+    if(map[mapWidth - entities[i]->x][mapHeight - entities[i]->y]) entities[i]->dead = true;
   }
 }
 
 // Funcao que avalia uma populacao e define o melhor da geração e o melhor de todas as gerações
-void avaliar(entity* entities, entity *best, entity *thebestofthebest){
+void Avalia(entity **entities, int population, entity *thebest, entity *thebestofthebest, float mutation){
 
   double melhor_dist = 0,dist;
+  melhor_dist =  mapWidth*2;
 
-  melhor_dist =  sqrt(pow(abs(entities[0].x - 18),2) + pow(abs(entities[0].y - 18),2));
-
-  for(int i = 1; i < population; i++){
-    
-    dist = sqrt(pow(abs(entities[i].x - 18),2) + pow(abs(entities[i].y - 18),2));      
-    if(dist < melhor_dist){
-      *best =  entities[i];
-      melhor_dist = dist; 
+  for(int i = 0; i < population; i++){
+    if(!entities[i]->dead){
+      dist = sqrt(pow(abs(entities[i]->x - 18),2) + pow(abs(entities[i]->y - 18),2));      
+      if(dist < melhor_dist){
+        thebest->x =  entities[i]->x;
+        thebest->y = entities[i]->y;
+        thebest->dead = entities[i]->dead;
+        thebest->movimentos = entities[i]->movimentos;
+        melhor_dist = dist; 
+      }
     }
   }
 
-  if(melhor_dist < sqrt(pow(abs(thebestofthebest->x - 18),2) + pow(abs(thebestofthebest->y - 18),2)))
-    *thebestofthebest = *best;
+  if(melhor_dist < sqrt(pow(abs(thebestofthebest->x - 18),2) + pow(abs(thebestofthebest->y - 18),2))){
+    thebestofthebest->x = thebest->x;
+    thebestofthebest->y = thebest->y;
+    thebestofthebest->dead = thebest->dead;
+    thebestofthebest->movimentos = thebest->movimentos;
+  }
 
-  
 }
 
+/*
 void Transa(entity* entities, entity thebest){
 
   char mov_rand[2];

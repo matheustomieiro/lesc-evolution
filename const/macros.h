@@ -6,10 +6,10 @@
 #define mapHeight 20
 #define screenWidth 640
 #define screenHeight 480
+#define frames 0.1
 
-#define radius_entity 2
-#define initial_x 5.0
-#define initial_y 5.0
+#define initial_x 1
+#define initial_y 1
 
 typedef struct mov{
   char direcao;
@@ -18,8 +18,8 @@ typedef struct mov{
 
 typedef struct ent{
   bool dead;
-  float x;
-  float y;
+  unsigned char x;
+  unsigned char y;
   std::vector<movimento> *movimentos;
 }entity;
 
