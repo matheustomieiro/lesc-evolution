@@ -87,24 +87,24 @@ void Transa(entity **entities, int *thebest, entity *thebestofthebest, int popul
 }
 
 // Funcao que avalia uma populacao e define o melhor da geração e o melhor de todas as gerações
-void Avalia(entity **entities, int population, int *thebest, entity *thebestofthebest, float mutation, const unsigned char map[mapWidth][mapHeight]){
+void Avalia(entity **entities, int population, int *thebest, entity *thebestofthebest, float mutation, const unsigned char map[mapWidth][mapHeight], int best_x, int best_y, char *melhor_movimento){
   thebestofthebest->dead = false;
   int melhor_dist = 0,dist;
   melhor_dist =  mapWidth*2;
 
   for(int i = 0; i < population; i++){
-      dist = (sqrt(pow(end_x - entities[i]->x,2) + pow(end_y - entities[i]->y,2)));  
-      if(dist < melhor_dist){
-        *thebest = i;
-        melhor_dist = dist; 
-      }
+    dist = (sqrt(pow(end_x - entities[i]->x,2) + pow(end_y - entities[i]->y,2)));  
+    if(dist < melhor_dist){
+      *thebest = i;
+      melhor_dist = dist; 
+    }
   }
-  
-  if(melhor_dist < sqrt(pow((end_x - thebestofthebest->x),2) + pow(end_y - thebestofthebest->y,2)) && map[mapWidth-1 - entities[*thebest]->y][entities[*thebest]->x] != 1){
-    thebestofthebest->x = entities[*thebest]->x;
-    thebestofthebest->y = entities[*thebest]->y;
+
+  if(best_x > thebestofthebest->x || best_y > thebestofthebest->y){    
+    thebestofthebest->x = best_x;
+    thebestofthebest->y = best_y;
     for(int i=0; i<vector_size; i++){
-      thebestofthebest->movimentos[i] = entities[*thebest]->movimentos[i];
+      thebestofthebest->movimentos[i] = melhor_movimento[i];
     }
   }
 

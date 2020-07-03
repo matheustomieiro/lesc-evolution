@@ -1,5 +1,5 @@
 //Main files
-#include "../../const/matrix2.h"
+#include "../../const/matrixbase.h"
 #include <iostream>
 #include <math.h>
 #include <pthread.h>
@@ -14,12 +14,13 @@
 using namespace std;
 
 int QUIT = false;
-bool start_pressed = false;
+bool start_pressed;
 int population = 0;
 int fmg_value = 0;
 float initial_mutation = 0.00;
 int gen = 0;
 struct timespec tim, tim2;
+bool mut_var = true;
 
 entity **cockroaches;
 entity *thebestofthebest;
@@ -93,7 +94,7 @@ Fl_Double_Window* make_window() {
     { // Imagem do cenario
       background = new Fl_Box(375,20,400,400);
       //background->box(FL_SHADOW_BOX);
-      png = new Fl_PNG_Image("img/map2.png");
+      png = new Fl_PNG_Image(MATRIX_IMG);
       background->image(png);
       entities_on_matrix = new Entity_Shape(375,20,400,400);
       entities_on_matrix->hide();
@@ -158,6 +159,8 @@ void restart_pop(){
 
 //Thread function to evolve A.G
 void *evolve_routine(void*){
+  int best_x = initial_x, best_y = initial_y;
+  char *melhor_movimento = (char*)malloc(sizeof(char)*vector_size);
   //Instancing entities
   while(!QUIT){
     if(start_pressed){
@@ -177,12 +180,21 @@ void *evolve_routine(void*){
                 cockroaches[i]->y += 1;
               }
               if(map[mapWidth-1 - cockroaches[i]->y][cockroaches[i]->x] == 1) cockroaches[i]->dead =true; //morre ao pisar numa parede
+              
+              if(cockroaches[i]->x > best_x && cockroaches[i]->y > best_y && !cockroaches[i]->dead){
+                best_x = cockroaches[i]->x;
+                best_y = cockroaches[i]->y;
+                for(int p=0; p<cockroaches[i]->passos_totais; p++){
+                  melhor_movimento[p] = cockroaches[i]->movimentos[p];
+                }
+                mut_var = false;
+              }
             }
           }
           nanosleep(&tim,&tim2);
         }
       nanosleep(&tim,&tim2);
-      Avalia(cockroaches,population,thebest,thebestofthebest,initial_mutation,map);
+      Avalia(cockroaches,population,thebest,thebestofthebest,initial_mutation,map,best_x, best_y, melhor_movimento);
       Transa(cockroaches,thebest,thebestofthebest,population,initial_mutation);
       restart_pop();
       string aux_gen, aux_mutation;
@@ -192,13 +204,17 @@ void *evolve_routine(void*){
       aux_mutation.append("MUTACAO : ");
       aux_mutation.append(to_string(initial_mutation));
       mutation->label(aux_mutation.c_str());
-      if(gen%50 == 0){
-        if(initial_mutation > 10000) initial_mutation = mutacao_inicial->value();
-        else initial_mutation *= 7;
-        
+      if(gen%30 == 0){
+        if(mut_var){
+          if(initial_mutation > 10000) initial_mutation = mutacao_inicial->value();
+          else initial_mutation *= 3;
+          mut_var = true;
+        }
       }
     }
+    mut_var = true;
   }
+  free(melhor_movimento);
   pthread_exit(NULL);
 }
 
@@ -214,7 +230,7 @@ static void setInitialTheBest(){
 
 int main(int argc, char **argv){
   tim.tv_sec  = 0;
-  tim.tv_nsec = 50000000L;
+  tim.tv_nsec = 10000000L;
 
   setInitialTheBest();
 
