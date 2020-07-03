@@ -1,5 +1,5 @@
 //Main files
-#include "../../const/matrix.h"
+#include "../../const/matrix2.h"
 #include <iostream>
 #include <math.h>
 #include <pthread.h>
@@ -53,11 +53,13 @@ Fl_Value_Input *mutacao_inicial=(Fl_Value_Input *)0;
 Fl_PNG_Image *png = (Fl_PNG_Image *)0;
 Fl_Box *background = (Fl_Box*)0;
 Fl_Box *generation = (Fl_Box*)0;
+Fl_Box *mutation = (Fl_Box*)0;
 Entity_Shape *entities_on_matrix = (Entity_Shape*)0;
 
 static void update(void*){
   entities_on_matrix->redraw();
   janela_principal->redraw();
+  srand(time(NULL));rand();rand();rand();
   Fl::repeat_timeout(frames, update);
 }
 
@@ -99,6 +101,10 @@ Fl_Double_Window* make_window() {
       generation->label("GERACAO : 0");
       generation->box(FL_THIN_UP_BOX);
       generation->color((Fl_Color)238);
+      mutation = new Fl_Box(375,470,400,20);
+      mutation->label("MUTACAO : 0.0");
+      mutation->box(FL_THIN_UP_BOX);
+      mutation->color((Fl_Color)238);
     } // Fl_Box* image
     { // Comeca o ciclo de evolucao
       start = new Fl_Return_Button(150, 180, 115, 30, "INICIAR");
@@ -161,13 +167,13 @@ void *evolve_routine(void*){
           for(int i=0; i<population; i++){
             if(j >= cockroaches[i]->passos_totais) cockroaches[i]->dead = true;
             if(!cockroaches[i]->dead && cockroaches[i]->movimentos[j] != 'n'){
-              if(cockroaches[i]->movimentos[j] == 'd'){
+              if(cockroaches[i]->movimentos[j] == 'd'){       //RIGHT
                 cockroaches[i]->x += 1;
-              }else if(cockroaches[i]->movimentos[j] == 'c'){
+              }else if(cockroaches[i]->movimentos[j] == 'c'){  //LEFT
                 cockroaches[i]->x -= 1;
-              }else if(cockroaches[i]->movimentos[j] == 'b'){
+              }else if(cockroaches[i]->movimentos[j] == 'b'){  //DOWN
                 cockroaches[i]->y -= 1;
-              }else if(cockroaches[i]->movimentos[j] == 'a'){  
+              }else if(cockroaches[i]->movimentos[j] == 'a'){  //UP
                 cockroaches[i]->y += 1;
               }
               if(map[mapWidth-1 - cockroaches[i]->y][cockroaches[i]->x] == 1) cockroaches[i]->dead =true; //morre ao pisar numa parede
@@ -179,10 +185,18 @@ void *evolve_routine(void*){
       Avalia(cockroaches,population,thebest,thebestofthebest,initial_mutation,map);
       Transa(cockroaches,thebest,thebestofthebest,population,initial_mutation);
       restart_pop();
-      string aux_gen;
+      string aux_gen, aux_mutation;
       aux_gen.append("GERACAO : ");
       aux_gen.append(to_string(gen));
       generation->label(aux_gen.c_str());
+      aux_mutation.append("MUTACAO : ");
+      aux_mutation.append(to_string(initial_mutation));
+      mutation->label(aux_mutation.c_str());
+      if(gen%50 == 0){
+        if(initial_mutation > 10000) initial_mutation = mutacao_inicial->value();
+        else initial_mutation *= 7;
+        
+      }
     }
   }
   pthread_exit(NULL);
