@@ -6,16 +6,8 @@
 
 using namespace std;
 
-movimento aux;
-
-movimento new_movement(char mov_type, unsigned char qtd){
-  aux.direcao = mov_type;
-  aux.passos = qtd;
-  return aux;
-}
-
 void iniciaPop(entity **entities, int population){
-  int num_direcao, num_passos;
+  int num_direcao;
   char dir;
 
   for(int i = 0; i < population; i++){
@@ -25,9 +17,9 @@ void iniciaPop(entity **entities, int population){
     entities[i]->passos_totais = 0;
 
     srand(time(NULL));
+    rand();rand();rand();
     
     num_direcao = (rand()+i)%4;
-    num_passos = 1;
 
     switch (num_direcao){
       
@@ -44,54 +36,32 @@ void iniciaPop(entity **entities, int population){
         dir = 'r';
         break;
     }
-    entities[i]->movimentos = (movimento*)malloc(sizeof(movimento)*vector_size);
-    entities[i]->movimentos[entities[i]->passos_totais].direcao = dir;
-    entities[i]->movimentos[entities[i]->passos_totais].passos = num_passos;
+    entities[i]->movimentos = (char*)calloc(vector_size,sizeof(char));
+    entities[i]->movimentos[entities[i]->passos_totais] = dir;
     entities[i]->passos_totais++;
   }
 }
 
-void Transa(entity **entities, entity *thebest, entity *thebestofthebest, int population, float mutation, const unsigned char map[mapWidth][mapHeight]){
-
-  movimento moves[2];
-  char chosen_mov, rand_dir[2];
-  int ind_rand,chosen_passos, rand_passos;
+void Transa(entity **entities, entity *thebest, entity *thebestofthebest, int population, float mutation){
 
   for(int i = 0; i < population; i++){
     srand(time(NULL));
+    rand();rand();rand();
 
-    ind_rand = (int) ((rand()%population + (rand()%430/1000.0 +  thebestofthebest->x*((rand()%388)/1000.0) + thebest->x*((rand()%588)/1000)))*(mutation))%(population-1);
+    //ind_rand = (int) ((rand()%population + (rand()%430/1000.0 +  thebestofthebest->x*((rand()%388)/1000.0) + thebest->x*((rand()%588)/1000)))*(mutation))%(population-1);
 
-    moves[0] = entities[ind_rand]->movimentos[entities[ind_rand]->passos_totais - 1];
-    moves[1] = entities[i]->movimentos[entities[ind_rand]->passos_totais - 1];
-
-    rand_dir[0] = moves[0].direcao;
-    rand_dir[1] = moves[1].direcao;
-
-    if(rand_dir[0] == rand_dir[1]) chosen_mov = rand_dir[0];
-    else{
-      chosen_mov = rand_dir[rand()%2];
-    }
-
-    if(moves[0].passos > moves[1].passos) chosen_passos = moves[0].passos;
-    else{
-      chosen_passos = moves[1].passos;
-    }
-
-    entities[i]->movimentos[entities[i]->passos_totais] = new_movement(chosen_mov, chosen_passos);
-    entities[i]->passos_totais++;
   }
 }
 
 // Funcao que avalia uma populacao e define o melhor da geração e o melhor de todas as gerações
 void Avalia(entity **entities, int population, entity *thebest, entity *thebestofthebest, float mutation){
 
-  double melhor_dist = 0,dist;
+  int melhor_dist = 0,dist;
   melhor_dist =  mapWidth*2;
 
   for(int i = 0; i < population; i++){
-    if(!entities[i]->dead){
-      dist = sqrt(pow(abs(entities[i]->x - 18),2) + pow(abs(entities[i]->y - 18),2));      
+      dist = sqrt(pow(end_x - entities[i]->x,2) + pow(end_y - entities[i]->y,2));
+      printf("DIST: %d\n",dist);    
       if(dist < melhor_dist){
         thebest->x = entities[i]->x;
         thebest->y = entities[i]->y;
@@ -99,7 +69,6 @@ void Avalia(entity **entities, int population, entity *thebest, entity *thebesto
         *(thebest->movimentos) = *(entities[i]->movimentos);
         melhor_dist = dist; 
       }
-    }
   }
 
   if(melhor_dist < sqrt(pow(abs(thebestofthebest->x - 18),2) + pow(abs(thebestofthebest->y - 18),2))){

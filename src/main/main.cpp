@@ -152,25 +152,24 @@ void *evolve_routine(void*){
       restart_pop();
       nanosleep(&tim,&tim2);
       while(!all_dead()){
-        for(int j=0; j<2; j++){
+        for(int j=0; j<vector_size; j++){
           for(int i=0; i<population; i++){
-            if(j < cockroaches[i]->passos_totais){
-              printf("X: %u\tY: %u\tD: %c\n",cockroaches[i]->x,cockroaches[i]->y,cockroaches[i]->movimentos[j].direcao);
-              if(cockroaches[i]->movimentos[j].direcao == 'r'){
+            if(!cockroaches[i]->dead){
+              if(cockroaches[i]->movimentos[j] == 0) continue;
+              else if(cockroaches[i]->movimentos[j] == 'r'){
                 cockroaches[i]->x += 1;
-              }else if(cockroaches[i]->movimentos[j].direcao == 'l'){
+              }else if(cockroaches[i]->movimentos[j] == 'l'){
                 cockroaches[i]->x -= 1;
-              }else if(cockroaches[i]->movimentos[j].direcao == 'd'){
+              }else if(cockroaches[i]->movimentos[j] == 'd'){
                 cockroaches[i]->y -= 1;
-              }else if(cockroaches[i]->movimentos[j].direcao == 'u'){  
+              }else if(cockroaches[i]->movimentos[j] == 'u'){  
                 cockroaches[i]->y += 1;
               }
-              printf("%u\n",map[cockroaches[i]->x][mapWidth-1 - cockroaches[i]->y]);
-              if(map[mapWidth-1 - cockroaches[i]->y][cockroaches[i]->x] == 1) cockroaches[i]->dead =true; //morre ao pisar numa parede
             }
+            if(map[mapWidth-1 - cockroaches[i]->y][cockroaches[i]->x] == 1) cockroaches[i]->dead =true; //morre ao pisar numa parede
           }
-          nanosleep(&tim,&tim2);
         }
+        nanosleep(&tim,&tim2);
       }
       //Transa(cockroaches,thebest,thebestofthebest,population,initial_mutation,map);
       //Avalia(cockroaches,population,thebest,thebestofthebest,initial_mutation);
@@ -183,8 +182,8 @@ static void setInitialTheBest(){
   thebestofthebest = (entity*)malloc(sizeof(entity));
   thebest = (entity*)malloc(sizeof(entity));
   thebestofthebest->dead = true;
-  thebestofthebest->movimentos = (movimento*)malloc(sizeof(movimento)*vector_size);
-  thebest->movimentos = (movimento*)malloc(sizeof(movimento)*vector_size);
+  thebestofthebest->movimentos = (char*)malloc(sizeof(char)*vector_size);
+  thebest->movimentos = (char*)malloc(sizeof(char)*vector_size);
   thebestofthebest->x = 1;
   thebestofthebest->y = 1;
 }
