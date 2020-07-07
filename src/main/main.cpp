@@ -181,7 +181,7 @@ void *evolve_routine(void*){
               }
               if(map[mapWidth-1 - cockroaches[i]->y][cockroaches[i]->x] == 1) cockroaches[i]->dead =true; //morre ao pisar numa parede
               
-              if(cockroaches[i]->x > best_x && cockroaches[i]->y > best_y && !cockroaches[i]->dead){
+              if(cockroaches[i]->x >= best_x && cockroaches[i]->y >= best_y && !cockroaches[i]->dead){
                 best_x = cockroaches[i]->x;
                 best_y = cockroaches[i]->y;
                 for(int p=0; p<cockroaches[i]->passos_totais; p++){
@@ -204,7 +204,7 @@ void *evolve_routine(void*){
       aux_mutation.append("MUTACAO : ");
       aux_mutation.append(to_string(initial_mutation));
       mutation->label(aux_mutation.c_str());
-      if(gen%30 == 0){
+      if(gen%8 == 0){
         if(mut_var){
           if(initial_mutation > 10000) initial_mutation = mutacao_inicial->value();
           else initial_mutation *= 3;
@@ -230,7 +230,7 @@ static void setInitialTheBest(){
 
 int main(int argc, char **argv){
   tim.tv_sec  = 0;
-  tim.tv_nsec = 10000000L;
+  tim.tv_nsec = 100000000L;
 
   setInitialTheBest();
 

@@ -8,7 +8,7 @@
 #define screenWidth 640
 #define screenHeight 480
 #define frames 0.008
-#define vector_size 25600
+#define vector_size 5
 #define end_x 18
 #define end_y 18
 
