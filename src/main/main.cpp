@@ -1,5 +1,5 @@
 //Main files
-#include "../../const/matrixbase.h"
+#include "../../const/matrix3.h"
 #include <iostream>
 #include <math.h>
 #include <pthread.h>
@@ -102,10 +102,10 @@ Fl_Double_Window* make_window() {
       generation->label("GERACAO : 0");
       generation->box(FL_THIN_UP_BOX);
       generation->color((Fl_Color)238);
-      mutation = new Fl_Box(375,470,400,20);
-      mutation->label("MUTACAO : 0.0");
-      mutation->box(FL_THIN_UP_BOX);
-      mutation->color((Fl_Color)238);
+      //mutation = new Fl_Box(375,470,400,20);
+      //mutation->label("MUTACAO : 0.0");
+      //mutation->box(FL_THIN_UP_BOX);
+      //mutation->color((Fl_Color)238);
     } // Fl_Box* image
     { // Comeca o ciclo de evolucao
       start = new Fl_Return_Button(150, 180, 115, 30, "INICIAR");
@@ -170,7 +170,7 @@ void *evolve_routine(void*){
           for(int i=0; i<population; i++){
             if(j >= cockroaches[i]->passos_totais) cockroaches[i]->dead = true;
             if(!cockroaches[i]->dead && cockroaches[i]->movimentos[j] != 'n'){
-              if(cockroaches[i]->movimentos[j] == 'd'){       //RIGHT
+              if(cockroaches[i]->movimentos[j] == 'd'){        //RIGHT
                 cockroaches[i]->x += 1;
               }else if(cockroaches[i]->movimentos[j] == 'c'){  //LEFT
                 cockroaches[i]->x -= 1;
@@ -179,7 +179,9 @@ void *evolve_routine(void*){
               }else if(cockroaches[i]->movimentos[j] == 'a'){  //UP
                 cockroaches[i]->y += 1;
               }
-              if(map[mapWidth-1 - cockroaches[i]->y][cockroaches[i]->x] == 1) cockroaches[i]->dead =true; //morre ao pisar numa parede
+
+              //Definicoes de como as baratas andam no labirinto
+              if(map[mapWidth-1 - cockroaches[i]->y][cockroaches[i]->x] == 1) cockroaches[i]->dead =true; //Morre ao encostar numa parede
               
               if(cockroaches[i]->x >= best_x && cockroaches[i]->y >= best_y && !cockroaches[i]->dead){
                 best_x = cockroaches[i]->x;
@@ -189,6 +191,9 @@ void *evolve_routine(void*){
                 }
                 mut_var = false;
               }
+              //Colocar um else aqui.... se a distancia euclidiana for menor, troca o best
+              
+              //Fim das definicoes
             }
           }
           nanosleep(&tim,&tim2);
@@ -201,11 +206,12 @@ void *evolve_routine(void*){
       aux_gen.append("GERACAO : ");
       aux_gen.append(to_string(gen));
       generation->label(aux_gen.c_str());
-      aux_mutation.append("MUTACAO : ");
-      aux_mutation.append(to_string(initial_mutation));
-      mutation->label(aux_mutation.c_str());
-      if(gen%8 == 0){
-        if(mut_var){
+      //aux_mutation.append("MUTACAO : ");
+      //aux_mutation.append(to_string(initial_mutation));
+      //mutation->label(aux_mutation.c_str());
+      printf("Mutacao: %.4f\n",initial_mutation);
+      if(gen%7 == 0){
+        if(true){
           if(initial_mutation > 10000) initial_mutation = mutacao_inicial->value();
           else initial_mutation *= 3;
           mut_var = true;
@@ -230,7 +236,7 @@ static void setInitialTheBest(){
 
 int main(int argc, char **argv){
   tim.tv_sec  = 0;
-  tim.tv_nsec = 100000000L;
+  tim.tv_nsec = 80000000L;
 
   setInitialTheBest();
 

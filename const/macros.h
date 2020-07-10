@@ -1,14 +1,14 @@
 #ifndef macros_h
 #define macros_h
 
-#define MATRIX_IMG "img/mapbase.png"
+#define MATRIX_IMG "img/map3.png"
 
 #define mapWidth 20
 #define mapHeight 20
 #define screenWidth 640
 #define screenHeight 480
 #define frames 0.008
-#define vector_size 5
+#define vector_size 1000
 #define end_x 18
 #define end_y 18
 

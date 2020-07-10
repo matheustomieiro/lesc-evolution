@@ -38,7 +38,6 @@ int traduz_num_direcao(char direcao){
 
 
 void iniciaPop(entity **entities, int population){
-  int num_direcao;
   char dir;
 
   for(int i = 0; i < population; i++){
@@ -49,7 +48,7 @@ void iniciaPop(entity **entities, int population){
 
     srand(time(NULL));rand();rand();rand();
     
-    num_direcao = traduz_direcao((rand()+i)%4);
+    dir = traduz_direcao((rand()+i)%4);
 
     entities[i]->movimentos = (char*)malloc(vector_size*sizeof(char));
     for(int j=0; j<vector_size; j++){
@@ -73,7 +72,7 @@ void Transa(entity **entities, int *thebest, entity *thebestofthebest, int popul
         entities[i]->movimentos[n] = traduz_direcao((int)(traduz_num_direcao(thebestofthebest->movimentos[n])));
         int aux_mut = traduz_num_direcao(entities[i]->movimentos[n]) + (((pow(-1,rand()%2+1))*(rand()%4)) * mutation*13);
 
-        if(n < 4 || n >= (entities[i]->passos_totais)/2){
+        if(n < 2 || n >= (int)(entities[i]->passos_totais)*0.789){
           if(aux_mut < 0) entities[i]->movimentos[n] = traduz_direcao((-aux_mut)%4);
           else if(aux_mut > 3) entities[i]->movimentos[n] = traduz_direcao((aux_mut-entities[i]->movimentos[n])%4);
           else entities[i]->movimentos[n] = traduz_direcao(aux_mut);
@@ -83,7 +82,7 @@ void Transa(entity **entities, int *thebest, entity *thebestofthebest, int popul
 
       //Fim da mistura
       
-      entities[i]->movimentos[entities[i]->passos_totais] = traduz_direcao((rand()%4000)/1000);
+      entities[i]->movimentos[entities[i]->passos_totais] = traduz_direcao((rand()%400000)/100000);
       entities[i]->passos_totais++;
     }
 
