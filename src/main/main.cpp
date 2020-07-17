@@ -16,7 +16,7 @@ using namespace std;
 int QUIT = false;
 bool start_pressed;
 int population = 0;
-int fmg_value = 0;
+int ge_value = 0;
 float initial_mutation = 0.00;
 int gen = 0;
 struct timespec tim, tim2;
@@ -48,7 +48,7 @@ public:
 
 Fl_Double_Window *janela_principal=(Fl_Double_Window *)0;
 Fl_Return_Button *start=(Fl_Return_Button *)0;
-Fl_Value_Input *fmg=(Fl_Value_Input *)0;
+Fl_Value_Input *ge=(Fl_Value_Input *)0;
 Fl_Value_Input *populacao=(Fl_Value_Input *)0;
 Fl_Value_Input *mutacao_inicial=(Fl_Value_Input *)0;
 Fl_PNG_Image *png = (Fl_PNG_Image *)0;
@@ -66,8 +66,8 @@ static void update(void*){
 
 
 static void start_listener(Fl_Return_Button*, void*){
-  fmg->deactivate();
-  fmg_value = fmg->value();
+  ge->deactivate();
+  ge_value = ge->value();
   populacao->deactivate();
   population = (int)floor(populacao->value());
   mutacao_inicial->deactivate();
@@ -115,12 +115,12 @@ Fl_Double_Window* make_window() {
       start->callback((Fl_Callback*)start_listener);
     } // Fl_Button* start
     { // Fator de mistura genetica
-      fmg = new Fl_Value_Input(180, 35, 180, 25, "FMG:");
-      //fmg->box(FL_SHADOW_BOX);
-      fmg->color((Fl_Color)215);
-      fmg->labelfont(11);
-      fmg->textfont(11);
-    } // Fl_Value_Input* fmg
+      ge = new Fl_Value_Input(180, 35, 180, 25, "GE:");
+      //ge->box(FL_SHADOW_BOX);
+      ge->color((Fl_Color)215);
+      ge->labelfont(11);
+      ge->textfont(11);
+    } // Fl_Value_Input* ge
     { // Numero de individuos da populacao
       populacao = new Fl_Value_Input(180, 75, 180, 25, "INDIVIDUOS:");
       //populacao->box(FL_SHADOW_BOX);
@@ -210,7 +210,7 @@ void *evolve_routine(void*){
       //aux_mutation.append(to_string(initial_mutation));
       //mutation->label(aux_mutation.c_str());
       printf("Mutacao: %.4f\n",initial_mutation);
-      if(gen%7 == 0){
+      if(gen%ge_value == 0){
         if(true){
           if(initial_mutation > 10000) initial_mutation = mutacao_inicial->value();
           else initial_mutation *= 3;
