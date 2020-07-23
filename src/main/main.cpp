@@ -1,5 +1,5 @@
 //Main files
-#include "../../const/matrix3.h"
+#include "../../const/matrix.h"
 #include <iostream>
 #include <math.h>
 #include <pthread.h>
@@ -21,6 +21,7 @@ float initial_mutation = 0.00;
 int gen = 0;
 struct timespec tim, tim2;
 bool mut_var = true;
+int FIM = 0;
 
 entity **cockroaches;
 entity *thebestofthebest;
@@ -59,6 +60,11 @@ Fl_Chart *fitness = (Fl_Chart*)0;
 Entity_Shape *entities_on_matrix = (Entity_Shape*)0;
 
 static void update(void*){
+  if(FIM == 1){
+    fl_alert("Chegou ao destino!");
+    exit(EXIT_SUCCESS);
+    FIM = 2;
+  }
   entities_on_matrix->redraw();
   janela_principal->redraw();
   srand(time(NULL));rand();rand();rand();
@@ -122,6 +128,7 @@ Fl_Double_Window* make_window() {
     { // Fator de mistura genetica
       ge = new Fl_Value_Input(180, 35, 180, 25, "GE:");
       //ge->box(FL_SHADOW_BOX);
+      ge->value(23);
       ge->color((Fl_Color)215);
       ge->labelfont(11);
       ge->textfont(11);
@@ -129,12 +136,14 @@ Fl_Double_Window* make_window() {
     { // Numero de individuos da populacao
       populacao = new Fl_Value_Input(180, 75, 180, 25, "INDIVIDUOS:");
       //populacao->box(FL_SHADOW_BOX);
+      populacao->value(100);
       populacao->color((Fl_Color)215);
       populacao->labelfont(11);
       populacao->textfont(11);
     } // Fl_Value_Input* populacao
     { // Taxa de mutacao inicial
       mutacao_inicial = new Fl_Value_Input(180, 120, 180, 25, "MUTACAO INICIAL:");
+      mutacao_inicial->value(13);
       //mutacao_inicial->box(FL_SHADOW_BOX);
       mutacao_inicial->color((Fl_Color)215);
       mutacao_inicial->labelfont(11);
@@ -154,18 +163,22 @@ bool all_dead(){
   return is_all_dead;
 }
 
-void restart_pop(){
+void restart_pop(int x, int y){
   for(int i=0; i<population; i++){
-    cockroaches[i]->x = initial_x;
-    cockroaches[i]->y = initial_y;
+    cockroaches[i]->x = x;
+    cockroaches[i]->y = y;
     cockroaches[i]->dead = false;
+    cockroaches[i]->passos_totais = 10;
   }
 }
+
 
 //Thread function to evolve A.G
 void *evolve_routine(void*){
   int best_x = initial_x, best_y = initial_y;
   char *melhor_movimento = (char*)malloc(sizeof(char)*vector_size);
+  int fator = 1, fator2 = 1;
+  int geracoes_trancado = 0;
   //Instancing entities
   while(!QUIT){
     if(start_pressed){
@@ -187,8 +200,10 @@ void *evolve_routine(void*){
 
               //Definicoes de como as baratas andam no labirinto
               if(map[mapWidth-1 - cockroaches[i]->y][cockroaches[i]->x] == 1) cockroaches[i]->dead =true; //Morre ao encostar numa parede
-              
-              if(cockroaches[i]->x >= best_x && cockroaches[i]->y >= best_y && !cockroaches[i]->dead){
+              if(map[mapWidth-1 - cockroaches[i]->y][cockroaches[i]->x] == 2){
+                FIM = 1;
+              }
+              if(fator2*cockroaches[i]->x >= best_x && fator*cockroaches[i]->y >= fator*best_y && !cockroaches[i]->dead){
                 best_x = cockroaches[i]->x;
                 best_y = cockroaches[i]->y;
                 for(int p=0; p<cockroaches[i]->passos_totais; p++){
@@ -196,7 +211,8 @@ void *evolve_routine(void*){
                 }
                 mut_var = false;
               }
-              if((sqrt(pow(end_x - cockroaches[i]->x,2) + pow(end_y - cockroaches[i]->y,2))) < (sqrt(pow(end_x - thebestofthebest->x,2) + pow(end_y - thebestofthebest->y,2))) && !cockroaches[i]->dead){
+
+              if((sqrt(pow(end_x - cockroaches[i]->x,2) + pow(end_y - cockroaches[i]->y,2))) < fator*(sqrt(pow(end_x - thebestofthebest->x,2) + pow(end_y - thebestofthebest->y,2))) && !cockroaches[i]->dead){
                   best_x = cockroaches[i]->x;
                   best_y = cockroaches[i]->y;
                   for(int p=0; p<cockroaches[i]->passos_totais; p++){
@@ -204,8 +220,13 @@ void *evolve_routine(void*){
                   }
                   mut_var = false;
                 }
-              //Colocar um else aqui.... se a distancia euclidiana for menor, troca o best
-              
+
+              //Se travar num canto
+              if(map[mapWidth-1 - thebestofthebest->y-1][thebestofthebest->x] == 1 && map[mapWidth-1 - thebestofthebest->y][thebestofthebest->x+1] == 1){
+                fator = -fator;
+                geracoes_trancado++;
+              }
+
               //Fim das definicoes
             }
           }
@@ -214,17 +235,20 @@ void *evolve_routine(void*){
       nanosleep(&tim,&tim2);
       Avalia(cockroaches,population,thebest,thebestofthebest,initial_mutation,map,best_x, best_y, melhor_movimento);
       Transa(cockroaches,thebest,thebestofthebest,population,initial_mutation);
-      restart_pop();
-      printf("\t%d\n%d\t\t%d\n\t%d\nVS:%d\n", map[mapWidth-1 - thebestofthebest->y-1][thebestofthebest->x], map[mapWidth-1 - thebestofthebest->y][thebestofthebest->x-1], map[mapWidth-1 - thebestofthebest->y][thebestofthebest->x+1], map[mapWidth-1 - thebestofthebest->y+1][thebestofthebest->x],cockroaches[0]->passos_totais);
+      restart_pop(best_x, best_y);
+      //printf("\t%d\n%d\t\t%d\n\t%d\nVS:%d\n", map[mapWidth-1 - thebestofthebest->y-1][thebestofthebest->x], map[mapWidth-1 - thebestofthebest->y][thebestofthebest->x-1], map[mapWidth-1 - thebestofthebest->y][thebestofthebest->x+1], map[mapWidth-1 - thebestofthebest->y+1][thebestofthebest->x],cockroaches[0]->passos_totais);
       string aux_gen, aux_mutation;
       aux_gen.append("GERACAO : ");
       aux_gen.append(to_string(gen));
       generation->label(aux_gen.c_str());
-      //aux_mutation.append("MUTACAO : ");
-      //aux_mutation.append(to_string(initial_mutation));
-      //mutation->label(aux_mutation.c_str());
       printf("Mutacao: %.4f\n",initial_mutation);
-      if(gen%ge_value == 0){
+      if(geracoes_trancado >= 80){
+        geracoes_trancado = 0;
+        fator2 = -fator2;
+      }
+      if(gen%ge_value == 0) fator = -fator;
+      if(mut_var > 1000 && gen%100 ==0) fator = -fator;
+      if(gen%13 == 0){
         if(true){
           if(initial_mutation > 10000) initial_mutation = mutacao_inicial->value();
           else initial_mutation *= 3;
@@ -251,7 +275,7 @@ static void setInitialTheBest(){
 
 int main(int argc, char **argv){
   tim.tv_sec  = 0;
-  tim.tv_nsec = 80000000L;
+  tim.tv_nsec = SEC;
 
   setInitialTheBest();
 
