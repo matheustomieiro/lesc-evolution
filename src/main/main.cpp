@@ -191,6 +191,14 @@ void *evolve_routine(void*){
                 }
                 mut_var = false;
               }
+              if((sqrt(pow(end_x - cockroaches[i]->x,2) + pow(end_y - cockroaches[i]->y,2))) < (sqrt(pow(end_x - thebestofthebest->x,2) + pow(end_y - thebestofthebest->y,2))) && !cockroaches[i]->dead){
+                  best_x = cockroaches[i]->x;
+                  best_y = cockroaches[i]->y;
+                  for(int p=0; p<cockroaches[i]->passos_totais; p++){
+                    melhor_movimento[p] = cockroaches[i]->movimentos[p];
+                  }
+                  mut_var = false;
+                }
               //Colocar um else aqui.... se a distancia euclidiana for menor, troca o best
               
               //Fim das definicoes
