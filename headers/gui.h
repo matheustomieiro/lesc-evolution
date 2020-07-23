@@ -16,4 +16,6 @@ extern Fl_PNG_Image *png;
 #include <FL/Fl_Box.H>
 extern Fl_Box *background;
 #include <FL/fl_draw.H>
+#include <Fl_Fl_Char.h>
+extern Fl_Chart *fitness;
 #endif
