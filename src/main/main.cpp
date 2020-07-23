@@ -210,6 +210,7 @@ void *evolve_routine(void*){
       Avalia(cockroaches,population,thebest,thebestofthebest,initial_mutation,map,best_x, best_y, melhor_movimento);
       Transa(cockroaches,thebest,thebestofthebest,population,initial_mutation);
       restart_pop();
+      printf("\t%d\n%d\t\t%d\n\t%d\nVS:%d\n", map[mapWidth-1 - thebestofthebest->y-1][thebestofthebest->x], map[mapWidth-1 - thebestofthebest->y][thebestofthebest->x-1], map[mapWidth-1 - thebestofthebest->y][thebestofthebest->x+1], map[mapWidth-1 - thebestofthebest->y+1][thebestofthebest->x],cockroaches[0]->passos_totais);
       string aux_gen, aux_mutation;
       aux_gen.append("GERACAO : ");
       aux_gen.append(to_string(gen));
