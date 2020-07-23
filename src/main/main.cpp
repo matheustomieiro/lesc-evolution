@@ -55,6 +55,7 @@ Fl_PNG_Image *png = (Fl_PNG_Image *)0;
 Fl_Box *background = (Fl_Box*)0;
 Fl_Box *generation = (Fl_Box*)0;
 Fl_Box *mutation = (Fl_Box*)0;
+Fl_Chart *fitness = (Fl_Chart*)0;
 Entity_Shape *entities_on_matrix = (Entity_Shape*)0;
 
 static void update(void*){
@@ -107,6 +108,10 @@ Fl_Double_Window* make_window() {
       //mutation->box(FL_THIN_UP_BOX);
       //mutation->color((Fl_Color)238);
     } // Fl_Box* image
+    {
+      fitness = new Fl_Chart(30, 235, 330, 185, "Fitness");
+      fitness->type(2/*FL_LINE_CHART*/);
+    }
     { // Comeca o ciclo de evolucao
       start = new Fl_Return_Button(150, 180, 115, 30, "INICIAR");
       //start->box(FL_RSHADOW_BOX);
@@ -226,6 +231,7 @@ void *evolve_routine(void*){
           mut_var = true;
         }
       }
+      fitness->add(-sqrt(pow(end_x - thebestofthebest->x,2) + pow(end_y - thebestofthebest->y,2)));
     }
     mut_var = true;
   }
