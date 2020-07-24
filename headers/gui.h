@@ -18,5 +18,6 @@ extern Fl_Box *background;
 #include <FL/fl_draw.H>
 #include <Fl/Fl_Chart.H>
 extern Fl_Chart *fitness;
+extern Fl_Chart *distancia_thebestofthebest;
 #include <FL/fl_ask.H>
 #endif

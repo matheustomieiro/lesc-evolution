@@ -1,6 +1,6 @@
 OS := $(shell uname -s)
 
-FLAGS := -lpthread	-lfltk	-lfltk_images	-w
+FLAGS := -lpthread	-lfltk	-lfltk_images	-w	-lX11
 
 ifeq ($(OS),Linux)
 	LIBS := sudo apt install mesa-common-dev	libfltk1.3-dev	libfltk-images1.3

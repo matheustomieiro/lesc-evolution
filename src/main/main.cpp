@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <time.h>
+#include <X11/Xlib.h> 
 
 using namespace std;
 
@@ -57,13 +58,14 @@ Fl_Box *background = (Fl_Box*)0;
 Fl_Box *generation = (Fl_Box*)0;
 Fl_Box *mutation = (Fl_Box*)0;
 Fl_Chart *fitness = (Fl_Chart*)0;
+Fl_Chart *distancia_thebestofthebest = (Fl_Chart*)0;
 Entity_Shape *entities_on_matrix = (Entity_Shape*)0;
 
 static void update(void*){
   if(FIM == 1){
-    fl_alert("Chegou ao destino!");
-    exit(EXIT_SUCCESS);
     FIM = 2;
+    fl_alert("Chegou ao destino!");
+    QUIT = 1;
   }
   entities_on_matrix->redraw();
   janela_principal->redraw();
@@ -115,8 +117,12 @@ Fl_Double_Window* make_window() {
       //mutation->color((Fl_Color)238);
     } // Fl_Box* image
     {
-      fitness = new Fl_Chart(30, 235, 330, 185, "Fitness");
+      fitness = new Fl_Chart(30, 235, 330, 97, "Fitness");
       fitness->type(2/*FL_LINE_CHART*/);
+      distancia_thebestofthebest = new Fl_Chart(30,362,330,97,"Passos TheBest");
+      distancia_thebestofthebest->type(2);
+      distancia_thebestofthebest->bounds(-2,10);
+      //distancia_thebestofthebest->autosize(1);
     }
     { // Comeca o ciclo de evolucao
       start = new Fl_Return_Button(150, 180, 115, 30, "INICIAR");
@@ -136,7 +142,7 @@ Fl_Double_Window* make_window() {
     { // Numero de individuos da populacao
       populacao = new Fl_Value_Input(180, 75, 180, 25, "INDIVIDUOS:");
       //populacao->box(FL_SHADOW_BOX);
-      populacao->value(100);
+      populacao->value(800);
       populacao->color((Fl_Color)215);
       populacao->labelfont(11);
       populacao->textfont(11);
@@ -168,19 +174,19 @@ void restart_pop(int x, int y){
     cockroaches[i]->x = x;
     cockroaches[i]->y = y;
     cockroaches[i]->dead = false;
-    cockroaches[i]->passos_totais = 10;
+    cockroaches[i]->passos_totais = 20;
   }
 }
 
 
 //Thread function to evolve A.G
 void *evolve_routine(void*){
-  int best_x = initial_x, best_y = initial_y;
+  int best_x = initial_x, best_y = initial_y, last_bx = best_x, last_by = best_y;
   char *melhor_movimento = (char*)malloc(sizeof(char)*vector_size);
   int fator = 1, fator2 = 1;
   int geracoes_trancado = 0;
   //Instancing entities
-  while(!QUIT){
+  while(FIM != 1){
     if(start_pressed){
         gen++;
         for(int j=0; j<vector_size; j++){
@@ -210,22 +216,25 @@ void *evolve_routine(void*){
                   melhor_movimento[p] = cockroaches[i]->movimentos[p];
                 }
                 mut_var = false;
+                geracoes_trancado = 0;
               }
 
               if((sqrt(pow(end_x - cockroaches[i]->x,2) + pow(end_y - cockroaches[i]->y,2))) < fator*(sqrt(pow(end_x - thebestofthebest->x,2) + pow(end_y - thebestofthebest->y,2))) && !cockroaches[i]->dead){
-                  best_x = cockroaches[i]->x;
-                  best_y = cockroaches[i]->y;
-                  for(int p=0; p<cockroaches[i]->passos_totais; p++){
-                    melhor_movimento[p] = cockroaches[i]->movimentos[p];
-                  }
-                  mut_var = false;
+                best_x = cockroaches[i]->x;
+                best_y = cockroaches[i]->y;
+                for(int p=0; p<cockroaches[i]->passos_totais; p++){
+                  melhor_movimento[p] = cockroaches[i]->movimentos[p];
                 }
+                mut_var = false;
+                geracoes_trancado = 0;
+              }
 
               //Se travar num canto
               if(map[mapWidth-1 - thebestofthebest->y-1][thebestofthebest->x] == 1 && map[mapWidth-1 - thebestofthebest->y][thebestofthebest->x+1] == 1){
                 fator = -fator;
-                geracoes_trancado++;
               }
+
+              geracoes_trancado++;
 
               //Fim das definicoes
             }
@@ -256,8 +265,10 @@ void *evolve_routine(void*){
         }
       }
       fitness->add(-sqrt(pow(end_x - thebestofthebest->x,2) + pow(end_y - thebestofthebest->y,2)));
+      distancia_thebestofthebest->add(sqrt(pow(best_x - last_bx,2) + pow(best_y - last_by,2)));
     }
     mut_var = true;
+    last_bx = best_x; last_by = best_y;
   }
   free(melhor_movimento);
   pthread_exit(NULL);
@@ -274,6 +285,9 @@ static void setInitialTheBest(){
 }
 
 int main(int argc, char **argv){
+
+  XInitThreads();
+
   tim.tv_sec  = 0;
   tim.tv_nsec = SEC;
 
