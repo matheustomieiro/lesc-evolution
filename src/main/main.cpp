@@ -209,6 +209,8 @@ void *evolve_routine(void*){
               if(map[mapWidth-1 - cockroaches[i]->y][cockroaches[i]->x] == 2){
                 FIM = 1;
               }
+              
+              //Parte avaliativa quanto ao best_x e o best_y
               if(fator2*cockroaches[i]->x >= best_x && fator*cockroaches[i]->y >= fator*best_y && !cockroaches[i]->dead){
                 best_x = cockroaches[i]->x;
                 best_y = cockroaches[i]->y;
@@ -219,6 +221,7 @@ void *evolve_routine(void*){
                 geracoes_trancado = 0;
               }
 
+              //Distancia euclidiana modificada com os pesos
               if((sqrt(pow(end_x - cockroaches[i]->x,2) + pow(end_y - cockroaches[i]->y,2))) < fator*(sqrt(pow(end_x - thebestofthebest->x,2) + pow(end_y - thebestofthebest->y,2))) && !cockroaches[i]->dead){
                 best_x = cockroaches[i]->x;
                 best_y = cockroaches[i]->y;
@@ -227,11 +230,6 @@ void *evolve_routine(void*){
                 }
                 mut_var = false;
                 geracoes_trancado = 0;
-              }
-
-              //Se travar num canto
-              if(map[mapWidth-1 - thebestofthebest->y-1][thebestofthebest->x] == 1 && map[mapWidth-1 - thebestofthebest->y][thebestofthebest->x+1] == 1){
-                fator = -fator;
               }
 
               geracoes_trancado++;
@@ -251,12 +249,21 @@ void *evolve_routine(void*){
       aux_gen.append(to_string(gen));
       generation->label(aux_gen.c_str());
       printf("Mutacao: %.4f\n",initial_mutation);
-      if(geracoes_trancado >= 80){
+
+      if(geracoes_trancado >= (int)(ge_value*2)){
         geracoes_trancado = 0;
         fator2 = -fator2;
       }
-      if(gen%ge_value == 0) fator = -fator;
-      if(mut_var > 1000 && gen%100 ==0) fator = -fator;
+     
+
+      if(gen%ge_value == 0){
+        fator = -fator;
+      }
+
+      if((gen%13) == 0 || (gen%57 == 0)){
+        fator = -fator;
+        fator2 = -fator2;
+      }
       if(gen%13 == 0){
         if(true){
           if(initial_mutation > 10000) initial_mutation = mutacao_inicial->value();
@@ -264,9 +271,11 @@ void *evolve_routine(void*){
           mut_var = true;
         }
       }
+
       fitness->add(-sqrt(pow(end_x - thebestofthebest->x,2) + pow(end_y - thebestofthebest->y,2)));
       distancia_thebestofthebest->add(sqrt(pow(best_x - last_bx,2) + pow(best_y - last_by,2)));
     }
+
     mut_var = true;
     last_bx = best_x; last_by = best_y;
   }

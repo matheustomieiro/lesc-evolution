@@ -11,7 +11,7 @@
 #define vector_size 30
 #define end_x 18
 #define end_y 18
-#define SEC 10000000L
+#define SEC 1000000L
 
 #define initial_x 1
 #define initial_y 1
