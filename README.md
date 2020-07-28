@@ -1,5 +1,5 @@
 # Lesc-Evolution
-Este projeto desenvolvido na disciplina Sistemas Evolutivos Aplicados a Robotica-USP/ICMC, implementa o Labyrinth Escape Evolution, mas de um jeito inusitado, utilizando computação evolutiva. Temidas por muitos, as baratas são uma das especies mais antigas da terra - Evidncias arqueológicas indicam que esta especie está presente no planeta a cerca de 380 milhões de ano. Resistentes à variadas temperaturas e umidade, elas são simbolo de resistência e curiosamente sofreram pouca evolução genética. 
+Este projeto desenvolvido na disciplina Sistemas Evolutivos Aplicados a Robotica-USP/ICMC, implementa o Labyrinth Escape Evolution, mas de um jeito inusitado, utilizando computação evolutiva. Temidas por muitos, as baratas são uma das especies mais antigas da terra - Evidências arqueológicas indicam que esta espécie está presente no planeta a cerca de 380 milhões de ano. Resistentes à variadas temperaturas e umidade, elas são simbolo de resistência e curiosamente sofreram pouca evolução genética. 
 
         ,--.     .--. 
       /     \. ./     \ 
