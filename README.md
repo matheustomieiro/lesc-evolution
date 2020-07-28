@@ -34,9 +34,10 @@ Yago Poletto
  Antes de tudo, instale as biblioteca utilizando o comando make install_libs na pasta raiz do projeto;
  
  - Para executar(em Linux ou MACOSX):
+ ```shell
  	make
 	make run
- 
+ ```
  - Para Windows há um versão pré-compilada(Em desenvolvimento...).
  
 ## Funcionamento
