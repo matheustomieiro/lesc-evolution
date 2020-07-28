@@ -31,11 +31,11 @@ Yago Poletto
  O algoritmo evolutivo foi escrito em C e C++ e utiliza FLTK como Interface Gráfica.
 
  ## Como executar
- Antes de tudo, instale as biblioteca utilizando o comando make install_libs na pasta raiz do projeto;
+ Antes de tudo, instale as biblioteca utilizando o comando <code>make install_libs</code> na pasta raiz do projeto;
  
  - Para executar(em Linux ou MACOSX):
  ```shell
- 	make
+	make
 	make run
  ```
  - Para Windows há um versão pré-compilada(Em desenvolvimento...).
