@@ -17,9 +17,7 @@ Este projeto desenvolvido na disciplina Sistemas Evolutivos Aplicados a Robotica
        \  \   |   /  /	    	          \/     \/     \/               \/                                           \/         \  \   |   /  /
         \  \  |  /  /    													  \  \  |  /  /
          \  \ | /  /   														   \  \ | /  /  
-        /   ~~~~~   \  														  /   ~~~~~   \   
-
-
+        /   ~~~~~   \														  /   ~~~~   \
 
 ## Alunos
 Felipe Oliveira
