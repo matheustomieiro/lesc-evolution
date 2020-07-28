@@ -35,8 +35,8 @@ Yago Poletto
  
  - Para executar(em Linux ou MACOSX):
  ```shell
-	make
-	make run
+make
+make run
  ```
  - Para Windows há um versão pré-compilada(Em desenvolvimento...).
  
