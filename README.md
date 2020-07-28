@@ -1,21 +1,25 @@
 # Lesc-Evolution
 Este projeto desenvolvido na disciplina Sistemas Evolutivos Aplicados a Robotica-USP/ICMC, implementa o Labyrinth Escape Evolution, mas de um jeito inusitado, utilizando computação evolutiva. Temidas por muitos, as baratas são uma das especies mais antigas da terra - Evidências arqueológicas indicam que esta espécie está presente no planeta a cerca de 380 milhões de ano. Resistentes à variadas temperaturas e umidade, elas são simbolo de resistência e curiosamente sofreram pouca evolução genética. 
 
-        ,--.     .--. 
-      /     \. ./     \ 
-	 /   /\ / " \ /\   \
-      __/  {~~v~~}  \__  
-          {   |   }      
-       /\{    |    }/\    
-    __/  {    |    }  \__   
-         {    |    }      
-        /{    |    }\     
-       / {    |    } \    
-      /  {    |    }  \   
-      \  \    |    /  /   
-       \  \   |   /  /    
-        \  \  |  /  /     
-        /   ~~~~~   \     
+
+        ,--.     .--. 														  ,--.     .--. 
+      /     \. ./     \ 												        /     \. ./     \ 
+     /   /\ / " \ /\   \												       /   /\ / " \ /\   \
+      __/  {~~v~~}  \__  												        __/  {~~v~~}  \__  
+          {   |   }													            {   |   }      
+       /\{    |    }/\													         /\{    |    }/\                    
+    __/  {    |    }  \__												      __/  {    |    }  \__			
+	 {    |    }	       	.__                                                   .__          __  .__               	   {    |    }
+	/{    |    }\		|  |   ____   ______ ____             _______  ______ |  |  __ ___/  |_|__| ____   ____           /{    |    }\
+       / {    |    } \		|  | _/ __ \ /  ___// ___\   ______ _/ __ \  \/ /  _ \|  | |  |  \   __\  |/  _ \ /    \         / {    |    } \
+      /  {    |    }  \		|  |_\  ___/ \___ \\  \___  /_____/ \  ___/\   (  <_> )  |_|  |  /|  | |  (  <_> )   |  \       /  {    |    }  \
+      \  \    |    /  /	 	|____/\___  >____  >\___  >          \___  >\_/ \____/|____/____/ |__| |__|\____/|___|  /       \  \    |    /  /
+       \  \   |   /  /	    	          \/     \/     \/               \/                                           \/         \  \   |   /  /
+        \  \  |  /  /    													  \  \  |  /  /
+         \  \ | /  /   														   \  \ | /  /  
+        /   ~~~~~   \  														  /   ~~~~~   \   
+
+
 
 ## Alunos
 Felipe Oliveira
