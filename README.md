@@ -9,8 +9,8 @@ Este projeto desenvolvido na disciplina Sistemas Evolutivos Aplicados a Robotica
           {   |   }													                
        /\{    |    }/\													                         
     __/  {    |    }  \__
-	 {    |    }	
-	/{    |    }\	
+	     {    |    }	
+	    /{    |    }\	
        / {    |    } \	
       /  {    |    }  \
       \  \    |    /  /	 	
