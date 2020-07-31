@@ -44,7 +44,7 @@ make run
  
  
 ## Alterando o labirinto
-Para alterar o labirinto, basta criar uma matriz(padrão 20 x 20) seguindo o modelo das <code>const/matrix.h</code>. Depois, deverá se alterar dentro de <code>const/macros.h</code> a linha <code>#define MATRIX_IMG "img/map.png"</code> alterando o conteúdo entre aspas duplas para o path de uma imagem do mesmo tamanho da matriz(padrão 20px x 20px) em pixelart. O site https://www.pixilart.com/draw é uma excelente ferramenta! Vale a pena conferir. Por padrão a imagem deverá ser salva em um tamanho de 400px x 400px, para que possa se adequar à Gui.
+Para alterar o labirinto, basta criar uma matriz(padrão 20 x 20) seguindo o modelo das <code>const/matrix.h</code>. Depois, deverá se alterar dentro de <code>const/macros.h</code> a linha <code>#define MATRIX_IMG "img/map.png"</code> alterando o conteúdo entre aspas duplas para o path de uma imagem do mesmo tamanho da matriz(padrão 20px x 20px) em pixelart. O site https://www.pixilart.com/draw é uma excelente ferramenta! Vale a pena conferir. Por padrão a imagem deverá ser salva em um tamanho de 400px x 400px, para que possa se adequar à Gui. Por último, trocar o <code>#include "nova_matrix.h"</code>
  
  
 ## Funcionamento
