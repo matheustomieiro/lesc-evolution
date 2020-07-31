@@ -49,3 +49,5 @@ Para alterar o labirinto, basta criar uma matriz(padrão 20 x 20) seguindo o mod
  
 ## Funcionamento
 As baratas precisam evoluir para superar os obstáculos do Maze e alcançar a saída. Para evoluir, inicialmente a barata considera a distancia euclídiana até o ponto de saída e as coordenadas vizinhas (x,y). A partir da barata melhor pontuada, filhas surgem e se movem nos eixos x e y e recalculam a distancia euclidiana. A cada iteração de evolução, o individuo filho compara se é superior ao melhor individuo da evolução até o momento, ou seja, caso o seu **x** e **y** for maior que melhor individuo e a distancia euclidiana menor, ele se torna o melhor individuo até ser substituído na evolução por outra barata melhor. Caso a barata fique presa em um canto, os pesos de pontuação mudarão e a barata comecerá a pontuar para outro lado do labirinto, sendo possível que ache outra rota.
+
+Vídeo explicativo: https://drive.google.com/file/d/12U2CneKyA-9KRjdIDOi7yjjzkxBs-aDF/view?usp=sharing
